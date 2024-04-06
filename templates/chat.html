@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>复杂聊天界面</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+  .chat-container { width: 100%; max-width: 800px; margin: auto; }
+  .chat-box { height: 500px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; padding: 20px; }
+  .message { padding: 10px; margin-bottom: 10px; border-radius: 10px; }
+  .other-message { background-color: #e7e7e7; text-align: left; }
+  .my-message { background-color: #blue; text-align: right; color: white; }
+  .message-info { font-size: 0.8em; margin-top: 5px; }
+  .input-box { display: flex; margin-top: 10px; }
+  .input-box input { flex-grow: 1; padding: 10px; }
+  .input-box button { width: 100px; }
+</style>
+</head>
+<body>
+<div class="chat-container">
+  <div id="chatBox" class="chat-box">
+    <!-- 聊天内容将显示在这里 -->
+  </div>
+  <div class="input-box">
+    <input type="text" id="textInput" placeholder="输入消息...">
+    <button onclick="sendMessage()">发送</button>
+  </div>
+</div>
+
+<script>
+  function sendMessage() {
+    var textInput = document.getElementById('textInput');
+    var message = textInput.value.trim();
+    if(message) {
+      // 显示消息到聊天框
+      var chatBox = document.getElementById('chatBox');
+      var newMessageDiv = document.createElement('div');
+      newMessageDiv.classList.add('message', 'my-message');
+      newMessageDiv.innerHTML = '<div>' + message + '</div><div class="message-info">我, ' + new Date().toLocaleTimeString() + '</div>';
+      chatBox.appendChild(newMessageDiv);
+      // 清空输入框
+      textInput.value = '';
+      // 滚动到最新消息
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+</script>
+</body>
+</html>
