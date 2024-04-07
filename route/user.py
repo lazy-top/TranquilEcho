@@ -24,6 +24,14 @@ def login():
         return jsonify(access_token=access_token), 200
 @bp.route('/register', methods=['POST'])
 def register():
+    """
+用户注册
+---
+tags:
+    - 用户相关接口
+description:
+
+"""
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     if username is None or password is None:
@@ -35,3 +43,6 @@ def register():
     db.session.add(user)
     db.session.commit()
     return jsonify({"msg": "User registered"}), 201
+@bp.route('/audio_chat')
+def audio_chat():
+    return jsonify({"msg": "audio_chat"}), 200

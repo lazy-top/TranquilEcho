@@ -30,3 +30,23 @@ def validate_password(password):
         return True    
     else:        
         return False
+    
+class Response:
+    def __init__(self, code, message, data=None):
+        self.code = code
+        self.message = message
+        self.data = data
+        self.success = code == 200
+    def to_dict(self):
+        return {    
+            'code': self.code,    
+            'message': self.message,    
+            'data': self.data    
+        }
+    def success(self):    
+        return self.code == 200
+    def fail(self):    
+        return self.code != 200
+
+
+    
