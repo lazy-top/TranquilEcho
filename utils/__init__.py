@@ -4,29 +4,29 @@ import re
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-# 预编译正则表达式，提高性能
-PHONE_PATTERN = re.compile(r'^\d{11}$')
+# 正则表达式匹配中国大陆的手机号码
+phone_number_pattern = re.compile(r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$')
+# 正则表达式匹配大多数电子邮件地址
+email_pattern = re.compile(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)')
+# 正则表达式匹配包含数字和字母，长度大于6小于20的密码
+password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$')
 
-def check_phone_format(phone):
-    """
-    检查手机号的格式是否合法。
-    
-    参数:
-    - phone: 待检查的手机号字符串。
-    
-    返回:
-    - True，如果手机号格式合法。
-    - False，如果手机号格式不合法。
-    """
-    # 检查输入是否为字符串类型
-    if not isinstance(phone, str):
-        raise ValueError("phone must be a string")
-        
-    # 检查手机号是否为空
-    if not phone:
+# 检查手机号码格式
+def validate_phone_number(phone_number):    
+    if phone_number_pattern.match(phone_number):        
+        return True   
+    else:        
         return False
-    
-    # 使用预编译的正则表达式进行手机号格式的检查
-    return PHONE_PATTERN.match(phone) is not None
 
+def validate_email(email):    
+    if email_pattern.match(email):        
+        return True    
+    else:        
+        return False
 
+# 验证密码格式
+def validate_password(password):    
+    if password_pattern.match(password):        
+        return True    
+    else:        
+        return False

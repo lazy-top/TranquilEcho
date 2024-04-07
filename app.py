@@ -15,6 +15,9 @@ def create_app():
     app.register_blueprint(bp)
     swagger = Swagger(app)
     db.init_app(app)
+    @app.route('/')
+    def open():
+        return ""
 
     # ...注册蓝图和其他应用配置...
 
