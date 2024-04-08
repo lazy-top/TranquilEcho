@@ -1,9 +1,11 @@
 from flask import Blueprint,render_template
+from flask_jwt_extended import jwt_required
 from flask_socketio import emit,SocketIO
 
 sio=SocketIO()
-bp=Blueprint('chat',__name__,url_prefix='/chat')
-@bp.route('/ui')
+chatbp=Blueprint('chat',__name__,url_prefix='/chat')
+@chatbp.route('/ui')
+@jwt_required()
 def ui():
     return render_template('chat.html')
 @sio.on('send_message')

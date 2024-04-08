@@ -2,9 +2,9 @@ from flask import Flask, jsonify
 from flask_socketio import SocketIO
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
-from utils import db
-from route.user import bp
-from route.chat import bp
+from utils import db,jwt
+from route.user import userbp
+from route.chat import chatbp
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'your-secret-key'
@@ -12,11 +12,12 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@127.0.0.1:3306/mind'
 
     socketio = SocketIO(app)
-    jwt = JWTManager(app)
-    app.register_blueprint(bp)
+    app.register_blueprint(chatbp)
+    app.register_blueprint(userbp)
 
     swagger = Swagger(app)
     db.init_app(app)
+    jwt.init_app(app)
     @app.route('/')
     def open():
         return ""
