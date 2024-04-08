@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from utils import db
 from route.user import bp
+from route.chat import bp
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'your-secret-key'
@@ -13,6 +14,7 @@ def create_app():
     socketio = SocketIO(app)
     jwt = JWTManager(app)
     app.register_blueprint(bp)
+
     swagger = Swagger(app)
     db.init_app(app)
     @app.route('/')

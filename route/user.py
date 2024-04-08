@@ -1,5 +1,4 @@
-from flask import jsonify, request
-from flask import Blueprint
+from flask import jsonify, request,render_template,Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_required
 from utils import db
 from model import User
@@ -45,4 +44,4 @@ description:
     return jsonify({"msg": "User registered"}), 201
 @bp.route('/audio_chat')
 def audio_chat():
-    return jsonify({"msg": "audio_chat"}), 200
+    return render_template('audio_chat.html')
