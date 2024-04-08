@@ -4,7 +4,10 @@ import re
 from flask import Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from flask_socketio import SocketIO
+#配置文件
 
+socketio = SocketIO()
 db = SQLAlchemy()
 jwt = JWTManager()
 
@@ -35,7 +38,7 @@ def validate_password(password):
     else:        
         return False
     
-class StandardResponse(Response):
+class StandardResponse():
     def __init__(self, status_code, data=None, message=None, headers=None, **kwargs):
         """
         初始化标准化的JSON响应对象。

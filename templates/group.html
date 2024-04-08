@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.4.1/dist/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="chat-container">
+        <!-- 聊天记录列表 -->
+        <ul id="messages"></ul>
+        <!-- 输入框及发送按钮 -->
+        <form id="message-form">
+            <input type="text" id="username" placeholder="Username">
+            <input type="text" id="room" placeholder="Room">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        const socket = io.connect(window.location.origin);
+
+        // 监听连接成功事件
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+
+        // 发送消息
+        $('#message-form').submit(function(e) {
+            e.preventDefault();
+            const username = $('#username').val();
+            const room = $('#room').val();
+            const message = $('#message-input').val();
+
+            socket.emit('chat_message', { username, message, room });
+            $('#message-input').val('');
+        });
+
+        // 接收并显示聊天消息
+        socket.on('chat_message', function(data) {
+            const li = document.createElement('li');
+            li.textContent = `${data.username}: ${data.message}`;
+            $('#messages').append(li);
+        });
+
+        // 用户加入房间逻辑（可添加到按钮点击事件）
+        function joinRoom(username, room) {
+            socket.emit('join', { username, room });
+        }
+
+        // 用户离开房间逻辑（可添加到相应按钮点击事件）
+        function leaveRoom(username, room) {
+            socket.emit('leave', { username, room });
+        }
+    </script>
+</body>
+</html>
