@@ -1,17 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Recorder with Twisted Arc</title>
-    <link rel="stylesheet" href="../static/css/audio_chat.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    #controls {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      border: 1px solid #000;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
-    <div id="recorder-container">
-        <button id="record-button">Start Recording</button>
-        <canvas id="sound-wave"></canvas>
-    </div>
+  <div id="controls">
+    <button id="backButton">返回</button>
+    <button id="hangupButton">挂断</button>
+  </div>
+  <canvas id="visualizer" width="400" height="200"></canvas>
 
-    <script src="../static/js/audio_chat.js"></script>
+  <script>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function(stream) {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        var analyser = audioContext.createAnalyser();
+        var source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        var canvas = document.getElementById('visualizer');
+        var canvasCtx = canvas.getContext('2d');
+        var bufferLength = analyser.frequencyBinCount;
+        var dataArray = new Uint8Array(bufferLength);
+
+        function draw() {
+          drawVisual = requestAnimationFrame(draw);
+          analyser.getByteTimeDomainData(dataArray);
+
+          var sum = 0;
+          for (var i = 0; i < bufferLength; i++) {
+            sum += dataArray[i];
+          }
+          var average = sum / bufferLength;
+
+          var radius = 50 + average / 2; // 根据音频数据的大小调整圆形的大小
+          canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+          canvasCtx.beginPath();
+          canvasCtx.arc(canvas.width / 2, canvas.height / 2, radius, 0, 2 * Math.PI);
+          canvasCtx.stroke();
+        }
+
+        draw();
+      })
+      .catch(function(err) {
+        console.log('The following gUM error occurred: ' + err);
+      });
+  </script>
 </body>
 </html>

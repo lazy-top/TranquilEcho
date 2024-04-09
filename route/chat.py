@@ -1,19 +1,35 @@
-from flask import Blueprint,render_template
+
+from flask import Blueprint,render_template, request,Response
 from flask_jwt_extended import jwt_required
 from flask_socketio import emit,SocketIO
-
+import ollama
 sio=SocketIO()
 chatbp=Blueprint('chat',__name__,url_prefix='/chat')
 @chatbp.route('/ui')
 @jwt_required()
 def ui():
     return render_template('chat.html')
-@sio.on('send_message')
-def handle_new_message(data):
-    message = data['message']
-    user = data['user']  # 如果有用户身份验证，此处应使用实际登录用户的标识
+@chatbp.route('/stream', methods=['POST'])
+@jwt_required()
+def chat_with_llama():
+    user_message = request.json.get('message',[])
+    def generate_response():
+        response=ollama.chat(
+            model='qwen',
+            messages=[{'role': 'user', 'content': user_message}],
+            stream=True,
+        )
 
-    # 可以在此处添加消息存储、过滤或其他业务逻辑
 
-    # 广播消息到所有连接的客户端
-    emit('new_message', {'user': user, 'message': message}, broadcast=True)
+        # 逐条发送模型的回复
+        for response_chunk in response:
+            yield (response_chunk['message']['content'])+'\n'
+
+
+    if request.method == 'POST':
+        headers = {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no',
+            }
+        return Response(generate_response(),mimetype="text/event-stream", headers =headers)

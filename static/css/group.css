@@ -1,0 +1,76 @@
+/* Reset some default browser styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#chat-room {
+    max-width: 90%;
+    margin: auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+form label,
+section h2 {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#messages {
+    height: ⅓;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+#messages p {
+    margin-bottom: 0.5rem;
+}
+
+#message-input {
+    width: 100%;
+    resize: vertical;
+    min-height: ½;
+    margin-bottom: 1rem;
+}
+
+#users {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

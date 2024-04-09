@@ -1,11 +1,11 @@
 from flask import Blueprint, Response, stream_with_context,Flask, request, send_file
-
+from utils import siwa
 from flask_jwt_extended import jwt_required
 from gtts import gTTS
-import os
 audiobp=Blueprint('audio',__name__,url_prefix='/audio')
 @audiobp.route('/get')
 @jwt_required()
+@siwa.doc(tags=['音频'])
 def stream_audio():
     """
     流式传输音频文件。
@@ -30,20 +30,8 @@ def stream_audio():
     return Response(stream_with_context(generate()), mimetype='audio/x-wav')
 
 @audiobp.route('/text-to-speech', methods=['POST'])
+@siwa.doc(tags=['音频'])
 def text_to_speech():
-    """
-    文本转转换为语音
-    ---
-    tags:
-        - 文本转语音
-    description:
-     使用gTTS库将文本转换为语音，并返回生成的语音文件。
-    parameters:
-      - name: text
-        in: formData
-    
-
-    """
     # 从请求中获取需要转换为语音的文本
     text = request.form['text']
     

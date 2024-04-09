@@ -1,22 +1,61 @@
-# from langchain.llms import ollama
-# from langchain.callbacks import StreamingStdOutCallbackHandler
+from langchain.prompts import PromptTemplate
+import  ollama
+from enum import Enum
+from langchain.output_parsers.enum import EnumOutputParser
+from langchain_community.llms import Ollama
+from langchain.prompts import PromptTemplate
 
-# # 初始化ollama
-# llm =ollama(model_name='qwen', streaming=True)
+# 初始化大型语言模型
+llm = Ollama(model="qwen")
+    # 定义枚举类
+class Choice(Enum):
+    A = "a"
+    B = "b"
+    C = "c"
+    D = 'd'
+def selector(input: str):
+    # 创建枚举输出解析器
+    parser = EnumOutputParser(enum=Choice)
 
-# # 定义回调处理器
-# class MyStreamingHandler(StreamingStdOutCallbackHandler):
-#     def __init__(self):
-#         self.buffer = ""
+    # 创建提示模板
+    prompt_template = PromptTemplate.from_template(
+        """请你选择一个与用户输入有关的选项:
+        "a:用户输入的内容体现了用户想知道有关心理学的知识。\n"
+        "b:用户输入的内容体现了用户自身存在心理状态上的疾病。\n"
+        "c:用户输入的内容体现了危害自己的内容，就是有可能会产生自残现象。\n"
+        "d:都不是。\n"
+    > 用户输入: {input}
 
-#     def on_new_token(self, token):
-#         # 这里处理每个新生成的token
-#         self.buffer += token
-#         if "\n" in self.buffer:
-#             message, self.buffer = self.buffer.split("\n", 1)
-#             yield f"data: {message}\n\n"
-# # 使用ollama处理用户输入
-# def process_user_input(user_input):
-#     handler = MyStreamingHandler()
-#     llm.predict(user_input, callbacks=[handler])
-#     return handler.generate_tokens()
+    Instructions: {instructions}"""
+    ).partial(instructions=parser.get_format_instructions())
+
+    # 构建处理链
+    chain = prompt_template | llm | parser
+
+    # 调用处理链
+    result = chain.invoke({"input": input})
+    return result
+
+def control(enum:Enum,input:str):
+    if(enum == Choice.A):
+        knowledge_base(input)
+        
+        pass
+    if(enum == Choice.B):
+        consultants(input)
+        
+        pass
+    if(enum == Choice.C):
+        waring(input)
+        
+        pass
+    if(enum == Choice.D):
+        
+        pass
+    
+def knowledge_base(input:str):
+    return  ''
+def consultants(input:str):
+    pass
+def  waring(input:str):
+    return  ''
