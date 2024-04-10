@@ -1,12 +1,11 @@
-
+from utils import siwa
 from flask import Blueprint,render_template, request,Response
 from flask_jwt_extended import jwt_required
-from flask_socketio import emit,SocketIO
 import ollama
-sio=SocketIO()
+from services import selector,Choice
 chatbp=Blueprint('chat',__name__,url_prefix='/chat')
 @chatbp.route('/ui')
-@jwt_required()
+# @jwt_required()
 def ui():
     return render_template('chat.html')
 @chatbp.route('/stream', methods=['POST'])
@@ -33,3 +32,14 @@ def chat_with_llama():
                 'X-Accel-Buffering': 'no',
             }
         return Response(generate_response(),mimetype="text/event-stream", headers =headers)
+@chatbp.route('/selector',methods=['POST'])
+@jwt_required()
+@siwa.doc(description='输入文本，调控中心返回对应的节点',tags=['聊天'])
+def selector():
+    user_message = request.json.get('message',[])
+    if request.method == 'POST':
+        choice =selector(user_message)
+    if(choice==Choice.C):
+        return 'C'
+
+    

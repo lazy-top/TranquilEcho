@@ -1,8 +1,10 @@
-from flask import Blueprint,render_template
+from flask import Blueprint,render_template,render_template_string
+from flask_jwt_extended import jwt_required
 from flask_socketio import emit, join_room, leave_room
 from utils import db,CustomResponse,siwa,socketio
 groupbp=Blueprint('group',__name__,url_prefix='/group')
 @groupbp.route('/ui')
+# @jwt_required()
 @siwa.doc(tags=['聊天社区'])
 def ui():
     """

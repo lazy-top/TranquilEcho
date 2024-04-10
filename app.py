@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template
 from flask_socketio import SocketIO
 from flask_jwt_extended import JWTManager
 from utils import db,jwt,socketio,siwa
@@ -24,8 +24,16 @@ def create_app():
     socketio.init_app(app)
     siwa.init_app(app)
     @app.route('/')
-    def open():
-        return "这是后端，请到前端接口访问"
+    def index_ui():
+        return render_template('index.html')
+    @app.route('/ui/contract')
+    def contract_ui():
+     return render_template('contract.html')
+    @app.route('/ui/Privacy_Policy')
+    def Privacy_Policy_ui():
+     return render_template('Privacy_Policy.html')
+
+
 
     # ...注册蓝图和其他应用配置...
 

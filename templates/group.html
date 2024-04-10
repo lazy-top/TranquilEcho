@@ -1,45 +1,83 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聊天社区</title>
-    <link rel="stylesheet" href="../static/css/">
-    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.4.1/dist/socket.io.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.js"></script>
 </head>
-
 <body>
-    <main id="chat-room">
-        <header>
-            <h1>聊天社区</h1>
-        </header>
-        <form id="join-form">
-            <label for="username">用户名:</label>
-            <input type="text" id="username" required>
-            <label for="room">房间号:</label>
-            <input type="text" id="room" required>
-            <button type="submit">加入房间</button>
-        </form>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <!-- 聊天消息列表 -->
+        <v-container>
+          <v-row no-gutters>
+            <v-col>
+              <v-list dense>
+                <v-list-item-group>
+                  <!-- 动态渲染消息，此处仅为示例 -->
+                  <v-list-item v-for="msg in messages" :key="msg.id">
+                    <v-list-item-avatar>
+                      <v-img :src="msg.user.avatar" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ msg.user.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ msg.timestamp }}</v-list-item-subtitle>
+                      <v-list-item-text>{{ msg.content }}</v-list-item-text>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-col>
+            <v-col class="mt-4">
+              <!-- 输入框和发送按钮 -->
+              <v-text-field label="输入消息" v-model="newMessage"></v-text-field>
+              <v-btn @click="sendMessage">发送</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
 
-        <section id="messages-container">
-            <h2>消息记录</h2>
-            <div id="messages"></div>
-        </section>
+  <script>
+    const { createApp, ref } = Vue;
 
-        <section id="message-input-container">
-            <label for="message-input">输入消息:</label>
-            <input type="text" id="message-input">
-            <button id="send-button">发送</button>
-        </section>
+    const app = createApp({
+      setup() {
+        const messages = ref([
+          // 示例消息数据
+          { id: 1, user: { name: 'Alice', avatar: 'avatar-url.png' }, timestamp: new Date(), content: '你好，Vue!' },
+          // ...
+        ]);
+        const newMessage = ref('');
+        
+        const sendMessage = () => {
+          // 在实际应用中，这里应该发送请求到服务器并添加新的消息到messages数组
+          messages.value.push({
+            id: messages.value.length + 1,
+            user: { name: 'YourName', avatar: 'your-avatar-url.png' },
+            timestamp: new Date(),
+            content: newMessage.value,
+          });
+          newMessage.value = '';
+        };
 
-        <section id="users-container">
-            <h2>在线用户</h2>
-            <div id="users"></div>
-        </section>
-    </main>
+        return {
+          messages,
+          newMessage,
+          sendMessage,
+        };
+      },
+    });
 
-    <script src="../static//js/group.js"></script>
+    // 注册并使用Vuetify
+    app.use(Vuetify);
+
+    app.mount('#app');
+  </script>
 </body>
-
 </html>

@@ -3,7 +3,17 @@ from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_require
 from utils import db,CustomResponse,siwa
 from model import User
 userbp=Blueprint('user',__name__,url_prefix='/user')
-
+@userbp.route('/login_ui')
+def login_ui():
+    """
+    用户登录，返回访问token
+    ---
+    tags:
+        - 用户相关接口
+    description: 用户提交用户名和密码进行登录，返回访问token
+    """
+    return render_template('login.html')
+    
 # 需要JWT认证的当前用户信息
 @userbp.route('/me')
 @jwt_required()

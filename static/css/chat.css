@@ -1,0 +1,260 @@
+/* #region图标 */
+@font-face {
+    font-family: 'iconfont';
+    src: url('../../static/other/iconfont.woff2?t=1710768339274') format('woff2'),
+         url('../../static/other/iconfont.woff?t=1710768339274') format('woff'),
+         url('../../static/other/iconfont.ttf?t=1710768339274') format('truetype');
+}
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+} 
+/* #endregion图标 */
+
+body {
+    background-image: url("../../static/other/背景图.png");
+    z-index: -1;
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden;
+}
+/* #region左部分 */
+.left-bar {
+    width: 20vw;
+    height: 100vh;
+    /* background-color:#E9DCD1; */
+    /* background-color: #D2DFB5; */
+    /* background-color:#BFC8A5; */
+    /* background-color: #FFFF99; */
+    /* background-color: rgba(183,220,125,0.5); */
+    /* background-color: #E3F7C1; */
+    /* background-color: #CFD7B5; */
+    background-color: #DADECA;
+
+}
+.logo {
+    height: 7vh;
+    margin-top: 1vh;
+    width: 100%;
+    background-color: transparent;
+    /* background-color: #D2DFB5; */
+    /* background-color: #BFC8A5; */
+    /* background-color: #FFFF99; */
+    /* background-color: rgba(101, 177, 101, 1); */
+}
+.container .blank1 {
+    height: 100vh;
+    width: 1vw;
+}
+.left-bar img {
+    height: 100%;
+    left: 1%;
+    margin: 0 auto;
+    line-height: 100%;
+}
+.left-bar .history {
+    height: 30%;
+    margin: 1rem;
+    /* background-color: #C7B39B; */
+    /* background-color: rgba(101, 177, 101, 0.7); */
+    /* background-color: #BFC8A5; */
+    /* background-color: #FFCC00; */
+    background-color: #BCDE89;
+    opacity: 0.7;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.left-bar .history .title {
+    font-size: 1rem;
+    margin: 10px 20px;
+}
+.left-bar .history span {
+    font-size: 20px;
+    margin-right: 8px;
+}
+.left-bar .character img {
+    margin-top: 3vh;
+    height: 55vh;
+}
+/* #endregion左部分 */
+
+/* #region右部分 */
+.right-bar {
+    width: 80vw;
+    /* height: 100vh; */
+    /* border-radius: 20px; */
+}
+.top-nav-bar {
+    height: 7vh;
+    width: 100%;
+    /* background-color: #C7B39B; */
+    /* background-color: rgba(112, 167, 81, 0.4); */
+    /* background-color: #BFC8A5; */
+    background-color: #BCDE89;
+    /* background-color: #FFCC00; */
+    opacity: 0.8;
+    border-radius: 5px;
+
+}
+.right-bar .blank {
+    height: 1vh;
+    background-color: transparent;
+}
+/* 新建对话 */
+.top-nav-bar .new-dialog:hover span {
+    color: #228B22;
+    font-weight: bold;
+
+}
+.top-nav-bar .new-dialog:hover a {
+    color: #228B22;
+    font-weight: bold;
+
+}
+/* 预约 */
+.top-nav-bar .oppointment:hover span {
+    color: #228B22;
+    font-weight: bold;
+
+}
+.top-nav-bar .oppointment:hover a {
+    font-weight: bold;
+    color: #228B22;
+}
+/* 报告 */
+.top-nav-bar .report:hover span {
+    font-weight: bold;
+    color: #228B22;
+}
+.top-nav-bar .report:hover a {
+    font-weight: bold;
+    color: #228B22;
+}
+/* 论坛 */
+.top-nav-bar .community:hover span {
+    font-weight: bold;
+    color:#228B22;
+}
+.top-nav-bar .community:hover a {
+    font-weight: bold;
+    color:#228B22;
+}
+/* 沉浸 */
+.top-nav-bar .immerse:hover span {
+    font-weight: bold;
+    color: #228B22;
+}
+.top-nav-bar .immerse:hover a {
+    font-weight: bold;
+    color: #228B22;
+}
+/* #endregion右部分 */
+
+
+
+/* #region右侧聊天框 */
+.top-nav-bar div {
+    line-height: 7vh;
+    font-size: 16px;
+    margin: auto 25px;   
+}
+.top-nav-bar span {
+    margin-right: 6px;
+}
+/* 交流页面 */
+.mainer {
+    width: 100%;
+    height: 92vh;
+    background-size: cover;
+    position: relative;
+    opacity: 1;
+}
+.mainer .chat-list {
+    background-color: black;
+    opacity: 0.1;
+    border-radius: 20px;
+    height: 65vh;
+    width: 68%;
+    position: absolute;
+    bottom: 26%;
+    right:28%;
+    /* overflow: scroll; */
+   
+}
+.mainer textarea {
+    color: black ;
+    width: 68%;
+    position: absolute;
+    bottom: 5%;
+    right: 28%;
+    border-radius: 15px;
+    font-size: 20px;
+    background-color: rgba(136, 197, 136, 0.4);
+    padding: 15px 20px;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+}
+textarea::-webkit-input-placeholder {
+    color: grey;
+    text-align: left;
+}
+.right-bar .mainer .voice {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    bottom: 5%;
+    right: 22%;
+    border: black solid 1px;
+    background-color: rgba(136, 197, 136, 0.7);
+
+    border-radius: 25px;
+    opacity: 0.8;
+    font-size: 20px;
+}
+.right-bar .mainer .submit {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    bottom: 5%;
+    right: 16%;
+    border: black solid 1px;
+    background-color: rgba(136, 197, 136, 0.7);
+
+    border-radius: 25px;
+    opacity: 0.8;
+    font-size: 20px;
+}
+.right-bar .mainer .voice span {
+    font-size: 20px;
+}
+.right-bar .mainer .submit span {
+    font-size: 20px;
+}
+.right-bar .mainer button span:hover {
+    font-weight: bold;
+}
+.right-bar .mainer footer {
+    font-size: 12px;
+    font-weight: 600;
+    position: absolute;
+    bottom: 2%;
+    left: 22%;
+}
+.right-bar .mainer footer a {
+    color: #228B22;
+}
+/* #endregion右侧聊天框 */
+
+/*  */
+
+
+
+
+
+
+
+

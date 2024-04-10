@@ -1,0 +1,26 @@
+.contract {
+    width: 800px;
+    margin: 60px auto;
+    padding: 24px 30px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-family: "SimSun","SIMFANG.TTF";
+}
+.contract .title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+.contract .main {
+    line-height: 2;
+}
+.retract,
+.rule2 .retract2,
+.rule3 .retract31,
+.rule3 .retract34,
+.rule3 .retract35 {
+    text-indent: 40px;
+}
+.contract h2 {
+    font-weight: bold;
+}

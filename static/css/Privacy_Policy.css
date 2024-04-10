@@ -1,0 +1,29 @@
+.policy {
+    width: 800px;
+    margin: 60px auto;
+    padding: 24px 30px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-family: "SimSun","SIMFANG.TTF";
+}
+.policy .title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    
+}
+.policy .prologue {
+    line-height: 1.7;
+    font-family: 'KaiTi';
+    text-indent: 40px;
+}
+.policy .main {
+    line-height: 1.8;
+}
+.main p {
+    text-indent: 40px;
+}
+.policy h2 {
+    font-weight: bold;
+}

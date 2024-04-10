@@ -1,47 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Simple Chat Room</title>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
-    <style>
-        /* 这里添加一些基本样式，例如对聊天窗口、输入框和发送按钮的样式设定 */
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/reset.css">
+    <link rel="stylesheet" href="../static/css/chat.css">
+    <title>心聆守护</title>
+    <script src="../static/js/chat.js"></script>
 </head>
 <body>
-    <div id="chat-container">
-        <!-- 聊天消息将显示在这里 -->
+    <div class="container clearfix">
+        <!-- 左侧导航栏 -->
+        <div class="left-bar leftfix">
+            <!--左侧logo区 -->
+            <div class="logo"><img src="../static/other/green-logo.png" alt=""></div>
+            <div class="history">
+                <div class="title"><span class="iconfont">&#xe620;</span>历史记录</div>
+            </div>
+            <div class="character">
+                <img src="../static/other/人物形象1.png" alt="">
+            </div>
+        </div>
+        <!-- 右侧导航栏 -->
+        <div class="right-bar rightfix">
+            <div class="top-nav-bar clearfix">
+                <!-- 新建对话 -->
+                <div class="new-dialog rightfix">
+                    <span class="iconfont">&#xe664;</span>
+                    <a href="#">新建对话</a>
+                </div>
+                 <!-- 预约心理咨询 -->
+                 <div class="oppointment rightfix">
+                    <span class="iconfont">&#xe680;</span>
+                    <a href="#">预约心理咨询</a>
+                </div>
+                 <!-- 生成评估报告 -->
+                 <div class="report rightfix">
+                    <span class="iconfont">&#xe675;</span>
+                    <a href="#">生成评估报告</a>
+                </div>
+                <!-- 社区论坛 -->
+                <div class="community rightfix">
+                    <span class="iconfont">&#xe668;</span>
+                    <a href="#">社区论坛</a>
+                </div>
+                 <!-- 沉浸模式 -->
+                 <div class="immerse rightfix">
+                    <span class="iconfont">&#xe69d;</span>
+                    <a href="../13_沉浸模式/component.html">沉浸模式</a>
+                </div>
+            </div>
+
+            <!-- 交流页面 -->
+            <div class="mainer">
+                <div class="chat-list"></div>
+                <form action="https://www.baidu.com" id="myTextarea">
+                    <!-- 输入框 -->
+                    <textarea name="input" id="input" cols="30" rows="4" autofocus placeholder="可通过shift+enter换行，点击语音图标即可开启语音输入"></textarea>
+                    <!-- 语音输入 -->
+                    <button type="submit" class="voice">
+                        <span class="iconfont">&#xe610;</span>
+                    </button>
+                    <!-- 发送按钮 -->
+                    <button type="submit" class="submit">
+                        <span class="iconfont">&#xe614;</span>
+                    </button>
+                </form>
+                <footer>内容由AI生成，仅供参考，请遵守<a href="../15_用户协议/contract.html">《心聆守护用户协议》</a>和<a href="../18_隐私政策/index.html">《隐私政策》</a></footer>
+            </div>
+        </div>
     </div>
-    <form id="message-form">
-        <input type="text" id="message-input" placeholder="Type your message...">
-        <button type="submit">Send</button>
-    </form>
-
-    <script>
-        const socket = io.connect('http://' + document.domain + ':' + location.port);
-
-        // 连接成功事件
-        socket.on('connect', function() {
-            console.log('Connected to chat server');
-        });
-
-        // 监听新消息事件
-        socket.on('new_message', function(message) {
-            displayMessage(message);
-        });
-
-        // 处理表单提交事件，发送消息到服务器
-        document.getElementById('message-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const input = document.getElementById('message-input');
-            socket.emit('send_message', { user: 'User', message: input.value });
-            input.value = '';
-        });
-
-        // 在页面上显示新消息的方法
-        function displayMessage(message) {
-            // 在这里添加将消息添加到DOM的逻辑，如创建新的`<div>`元素并添加到`#chat-container`
-        }
-    </script>
 </body>
 </html>
