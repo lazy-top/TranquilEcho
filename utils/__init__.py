@@ -6,8 +6,24 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from flask_siwadoc import SiwaDoc
+from pydantic import BaseModel
 #配置文件
-
+class Chat_message(BaseModel):
+    message_type:str
+    message:str
+    time:str
+    user_id:str
+class Text_to_speech(BaseModel):
+    text:str
+class Authorization(BaseModel):
+    Authorization:str
+class Login(BaseModel):
+    username:str
+    password:str
+class Register(BaseModel):
+    username:str
+    password:str
+    repassword:str
 socketio = SocketIO()
 db = SQLAlchemy()
 jwt = JWTManager()

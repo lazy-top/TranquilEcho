@@ -4,9 +4,20 @@ from enum import Enum
 from langchain.output_parsers.enum import EnumOutputParser
 from langchain_community.llms import Ollama
 from langchain.prompts import PromptTemplate
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "You are a helpful assistant. Answer all questions to the best of your ability.",
+        ),
+        MessagesPlaceholder(variable_name="messages"),
+    ]
+)
 # 初始化大型语言模型
 llm = Ollama(model="qwen")
+consultants_chain=llm | prompt
     # 定义枚举类
 class Choice(Enum):
     A = "a"
@@ -38,7 +49,8 @@ def selector(input: str):
 def knowledge_base(input:str):
     
     return  ''
-def consultants(input:str):
+def chat_with_consultants(input:str):
+    
 
     pass
 

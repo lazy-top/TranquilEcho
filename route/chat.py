@@ -1,4 +1,4 @@
-from utils import siwa,CustomResponse
+from utils import siwa,CustomResponse,Chat_message,Authorization
 from flask import Blueprint, request,Response
 from flask_jwt_extended import jwt_required
 import ollama
@@ -7,7 +7,7 @@ chatbp=Blueprint('chat',__name__,url_prefix='/chat')
 
 @chatbp.route('/simple_stream', methods=['POST'])
 @jwt_required()
-@siwa.doc(description='输入文本，返回模型回复',tags=['聊天'])
+@siwa.doc(description='输入文本，返回模型回复',tags=['聊天'],body=Chat_message,header=Authorization)
 def chat_with_llama():
     user_message = request.json.get('message',[])
     def generate_response():

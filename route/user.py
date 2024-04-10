@@ -1,12 +1,12 @@
 from flask import jsonify, request,Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_required
-from utils import db,CustomResponse,siwa
+from utils import db,CustomResponse,siwa,Login,Authorization,Register
 from model import User
 userbp=Blueprint('user',__name__,url_prefix='/user')
 # 需要JWT认证的当前用户信息
 @userbp.route('/me')
 @jwt_required()
-@siwa.doc(tags=['用户'])
+@siwa.doc(tags=['用户'],description='获取当前登录用户的个人信息',header=Authorization)
 def user():
     """
     获取当前登录用户的个人信息
@@ -20,7 +20,7 @@ def user():
 
 # 用户登录接口
 @userbp.route('/login', methods=['POST'])
-@siwa.doc(tags=['用户'])
+@siwa.doc(tags=['用户'],body=Login,description='用户登录，返回访问token')
 def login():
     """
     用户登录，返回访问token
@@ -45,7 +45,7 @@ def login():
 
 # 用户注册接口
 @userbp.route('/register', methods=['POST'])
-@siwa.doc(tags=['用户'])
+@siwa.doc(tags=['用户'],description='注册新用户',body=Register)
 def register():
     """
     注册新用户
@@ -56,6 +56,11 @@ def register():
     """
     username = request.json.get('username', None)
     password = request.json.get('password', None)
+    repassword = request.json.get('repassword', None)
+    if password != repassword:
+        return CustomResponse(
+            status_code=400, message='Password not match'
+        ).to_response()
     if username is None or password is None:
         return CustomResponse(
             status_code=400, message='Missing username or password'
