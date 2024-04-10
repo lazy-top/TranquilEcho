@@ -4,7 +4,7 @@ from enum import Enum
 from langchain.output_parsers.enum import EnumOutputParser
 from langchain_community.llms import Ollama
 from langchain.prompts import PromptTemplate
-
+from langchain_community.document_loaders import PyPDFLoader
 # 初始化大型语言模型
 llm = Ollama(model="qwen")
     # 定义枚举类
@@ -35,27 +35,34 @@ def selector(input: str):
     # 调用处理链
     result = chain.invoke({"input": input})
     return result
-
-def control(enum:Enum,input:str):
-    if(enum == Choice.A):
-        knowledge_base(input)
-        
-        pass
-    if(enum == Choice.B):
-        consultants(input)
-        
-        pass
-    if(enum == Choice.C):
-        waring(input)
-        
-        pass
-    if(enum == Choice.D):
-        
-        pass
-    
 def knowledge_base(input:str):
+    
     return  ''
 def consultants(input:str):
+
     pass
-def  waring(input:str):
-    return  ''
+
+def pdf_to_text(pdf_path:str):
+    loader = PyPDFLoader(pdf_path)
+import arxiv
+def arxiv_search(query: str):
+    # 设置搜索参数
+    search = arxiv.Search(
+        query=query,
+        max_results=10,
+        sort_by=arxiv.SortCriterion.SubmittedDate.descending  # 按提交日期降序排列
+    )
+
+    # 存储结果为字典列表
+    results_dict_list = []
+    for result in search.results():
+        paper_info = {
+            'entry_id': result.entry_id,
+            'title': result.title,
+            'summary': result.summary or "No summary provided",  # 防止摘要为空
+            'authors': [author.name for author in result.authors],
+        }
+        results_dict_list.append(paper_info)
+
+    return results_dict_list
+    

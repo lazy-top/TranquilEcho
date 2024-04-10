@@ -41,3 +41,16 @@ def text_to_speech():
     
     # 将生成的语音文件以流式数据的形式返回给前端
     return send_file("output.mp3", as_attachment=True)
+
+@audiobp.route('/speech-to-text', methods=['POST'])
+@siwa.doc(tags=['音频'])
+def speech_to_text():
+    """
+    将语音转换为文本。
+    
+    该函数接收一个POST请求，其中包含语音文件的二进制数据。
+    
+    返回值:
+        Response对象，包含转换后的文本。
+    """
+    pass

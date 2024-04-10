@@ -1,19 +1,8 @@
-from flask import jsonify, request,render_template,Blueprint
+from flask import jsonify, request,Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_required
 from utils import db,CustomResponse,siwa
 from model import User
 userbp=Blueprint('user',__name__,url_prefix='/user')
-@userbp.route('/login_ui')
-def login_ui():
-    """
-    用户登录，返回访问token
-    ---
-    tags:
-        - 用户相关接口
-    description: 用户提交用户名和密码进行登录，返回访问token
-    """
-    return render_template('login.html')
-    
 # 需要JWT认证的当前用户信息
 @userbp.route('/me')
 @jwt_required()
@@ -83,20 +72,6 @@ def register():
         status_code=201, 
         message='User created'
     ).to_response()
-
-# 音频聊天界面
-@userbp.route('/audio_chat')
-@jwt_required()
-@siwa.doc(tags=['用户'])
-def audio_chat():
-    """
-    展示音频聊天界面
-    ---
-    tags:
-        - 用户相关接口
-    description: 用于访问音频聊天界面的路由
-    """
-    return render_template('audio_chat.html')
 
 #更换密码
 @userbp.route('/change_password', methods=['POST'])

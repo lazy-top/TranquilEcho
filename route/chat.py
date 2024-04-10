@@ -1,15 +1,13 @@
-from utils import siwa
-from flask import Blueprint,render_template, request,Response
+from utils import siwa,CustomResponse
+from flask import Blueprint, request,Response
 from flask_jwt_extended import jwt_required
 import ollama
 from services import selector,Choice
 chatbp=Blueprint('chat',__name__,url_prefix='/chat')
-@chatbp.route('/ui')
-# @jwt_required()
-def ui():
-    return render_template('chat.html')
-@chatbp.route('/stream', methods=['POST'])
+
+@chatbp.route('/simple_stream', methods=['POST'])
 @jwt_required()
+@siwa.doc(description='输入文本，返回模型回复',tags=['聊天'])
 def chat_with_llama():
     user_message = request.json.get('message',[])
     def generate_response():
@@ -40,6 +38,16 @@ def selector():
     if request.method == 'POST':
         choice =selector(user_message)
     if(choice==Choice.C):
-        return 'C'
+        return CustomResponse(
+            message='控制中心反馈',
+            data=choice.value,
+            status_code=200
+        )
+    if(choice==choice.A):
+        
+        pass
+    if(choice==choice.B):
+        
+        pass
 
     
