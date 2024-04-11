@@ -32,22 +32,14 @@ def chat_with_llama():
         return Response(generate_response(),mimetype="text/event-stream", headers =headers)
 @chatbp.route('/selector',methods=['POST'])
 @jwt_required()
-@siwa.doc(description='输入文本，调控中心返回对应的节点',tags=['聊天'])
+@siwa.doc(body=Chat_message,description='输入文本，调控中心返回对应的节点',tags=['聊天'],header=Authorization)
 def selector():
     user_message = request.json.get('message',[])
-    if request.method == 'POST':
-        choice =selector(user_message)
-    if(choice==Choice.C):
-        return CustomResponse(
-            message='控制中心反馈',
-            data=choice.value,
-            status_code=200
-        )
-    if(choice==choice.A):
-        
-        pass
-    if(choice==choice.B):
-        
-        pass
+    choice =selector(user_message)
+    return CustomResponse(
+        message='控制中心反馈',
+        data=choice.value,
+        status_code=200
+    )
 
     
