@@ -33,12 +33,13 @@ def stream_audio():
 
 
 
+
 # 假设MAX_TEXT_LENGTH为允许的最大文本长度
 MAX_TEXT_LENGTH = 10000
 
-@audiobp.route('/text-to-speech', methods=['POST'])
+@audiobp.route('/simple_text-to-speech', methods=['POST'])
 @siwa.doc(body=Text_to_speech, tags=['音频'])
-def text_to_speech():
+def simple_text_to_speech():
     # 接收前端传递的文本数据，并进行验证
     text = request.json.get('text', None)
     if not text or len(text) > MAX_TEXT_LENGTH:
@@ -53,27 +54,28 @@ def text_to_speech():
     # 设置语音属性
     engine.setProperty('rate', 150)  # 调整语速
 
-    # 将文本转换为语音并保存到字节缓冲区
-    buffer = io.BytesIO()
+
     try:
-        engine.save_to_file(text, buffer)
+         # 保存到临时文件
+        engine.save_to_file(text, 'temp.mp3')
         engine.runAndWait()
     except Exception as e:
-        engine.quit()
+        engine.stop()
         return jsonify(error=f'Failed to convert text to speech: {str(e)}'), 500
 
-    # 移动到缓冲区的开始位置
-    buffer.seek(0)
 
-    # 定义一个生成器函数来流式传输音频
-    def generate(buffer):
-        data = buffer.read(1024)
-        while data:
-            yield data
-            data = buffer.read(1024)
+    # 读取临时文件并流式返回给前端
+    def generate():
+        with open('temp.mp3', 'rb') as f:
+            while True:
+                data = f.read(1024)
+                if not data:
+                    break
+                yield data
 
     # 以流的形式返回响应
-    return Response(generate(buffer), mimetype='audio/mp3')
+    return Response(generate(), mimetype='audio/mp3')
+
 @audiobp.route('/speech-to-text', methods=['POST'])
 @siwa.doc(tags=['音频'])
 def speech_to_text():
@@ -85,4 +87,14 @@ def speech_to_text():
     返回值:
         Response对象，包含转换后的文本。
     """
-    pass
+    # 获取请求中的语音文件
+    audio_data = request.files['audio']
+    if not audio_data:
+        return jsonify(error='No audio file provided'), 400
+    try:
+        # 使用gTTS库将语音转换为文本
+        
+        pass
+
+    except Exception as e:
+        return jsonify(error=str(e)), 500

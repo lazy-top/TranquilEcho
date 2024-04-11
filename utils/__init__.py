@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from flask_siwadoc import SiwaDoc
+from flask_cors import CORS
+
 from pydantic import BaseModel
 #配置文件
 class Chat_message(BaseModel):
@@ -24,10 +26,13 @@ class Register(BaseModel):
     username:str
     password:str
     repassword:str
+class User_message(BaseModel):
+    message:str
 socketio = SocketIO()
 db = SQLAlchemy()
 jwt = JWTManager()
 siwa=SiwaDoc()
+cors=CORS()
 # 正则表达式匹配中国大陆的手机号码
 phone_number_pattern = re.compile(r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$')
 # 正则表达式匹配大多数电子邮件地址

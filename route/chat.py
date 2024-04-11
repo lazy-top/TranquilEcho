@@ -1,13 +1,13 @@
-from utils import siwa,CustomResponse,Chat_message,Authorization
+from utils import siwa,CustomResponse,User_message,Authorization
 from flask import Blueprint, request,Response
 from flask_jwt_extended import jwt_required
 import ollama
-from services import selector,Choice
+from services import selector
 chatbp=Blueprint('chat',__name__,url_prefix='/chat')
 
 @chatbp.route('/simple_stream', methods=['POST'])
 @jwt_required()
-@siwa.doc(description='输入文本，返回模型回复',tags=['聊天'],body=Chat_message,header=Authorization)
+@siwa.doc(description='输入文本，返回模型回复',tags=['聊天'],body=User_message,header=Authorization)
 def chat_with_llama():
     user_message = request.json.get('message',[])
     def generate_response():
@@ -32,14 +32,21 @@ def chat_with_llama():
         return Response(generate_response(),mimetype="text/event-stream", headers =headers)
 @chatbp.route('/selector',methods=['POST'])
 @jwt_required()
-@siwa.doc(body=Chat_message,description='输入文本，调控中心返回对应的节点',tags=['聊天'],header=Authorization)
-def selector():
+@siwa.doc(body=User_message,description='输入文本，调控中心返回对应的节点',tags=['聊天'],header=Authorization)
+def select_api():
     user_message = request.json.get('message',[])
     choice =selector(user_message)
+    # 验证choice是否是枚举
+    if choice not in selector.choices:
+        return CustomResponse(
+            message='控制中心反馈',
+            data={"choice":choice},
+            status_code=400
+        ).to_response()
     return CustomResponse(
         message='控制中心反馈',
-        data=choice.value,
+        data={"choice":choice.value},
         status_code=200
-    )
+    ).to_response()
 
     

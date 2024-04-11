@@ -1,83 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css" rel="stylesheet">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.js"></script>
+  <!-- 引入 Vuetify 的 CSS -->
+  <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="../static/css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 <body>
+
   <div id="app">
+    <!-- App.vue -->
+
     <v-app>
+      <v-navigation-drawer app>
+        <!-- 聊天室列表 -->
+        <v-list>
+          <v-list-item
+            v-for="(roomName, index) in roomNames"
+            :key="index"
+            @click="currentRoom = roomName"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ roomName }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar app>
+        <!-- 当前聊天室标题 -->
+        <v-toolbar-title>{{ currentRoom || '请选择一个聊天室' }}</v-toolbar-title>
+      </v-app-bar>
+
+      <!-- 聊天内容区域 -->
       <v-main>
-        <!-- 聊天消息列表 -->
-        <v-container>
-          <v-row no-gutters>
-            <v-col>
-              <v-list dense>
-                <v-list-item-group>
-                  <!-- 动态渲染消息，此处仅为示例 -->
-                  <v-list-item v-for="msg in messages" :key="msg.id">
-                    <v-list-item-avatar>
-                      <v-img :src="msg.user.avatar" />
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ msg.user.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ msg.timestamp }}</v-list-item-subtitle>
-                      <v-list-item-text>{{ msg.content }}</v-list-item-text>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-col>
-            <v-col class="mt-4">
-              <!-- 输入框和发送按钮 -->
-              <v-text-field label="输入消息" v-model="newMessage"></v-text-field>
-              <v-btn @click="sendMessage">发送</v-btn>
-            </v-col>
-          </v-row>
+        <v-container fluid>
+          <!-- 消息列表 -->
+          <v-list>
+            <v-list-item
+              v-for="(message, index) in messages"
+              :key="index"
+            >
+              <v-list-item-content>
+                <v-list-item-title>{{ message }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-container>
       </v-main>
+
+      <!-- 输入区域 -->
+      <v-footer app>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="newMessage"
+              label="输入消息"
+              append-icon="mdi-send"
+              @click:append="sendMessage"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-footer>
     </v-app>
   </div>
 
+  <!-- 引入 Vue 和 Vuetify 的 JS -->
+  <script src="../static/js/vue.js"></script>
+  <script src="../static/js/vuetify.js"></script>
+  <script src="../static/js/socket.io.min.js"></script>
+  <script src="../static/js/vuex.min.js"></script>
+
   <script>
-    const { createApp, ref } = Vue;
-
-    const app = createApp({
-      setup() {
-        const messages = ref([
-          // 示例消息数据
-          { id: 1, user: { name: 'Alice', avatar: 'avatar-url.png' }, timestamp: new Date(), content: '你好，Vue!' },
-          // ...
-        ]);
-        const newMessage = ref('');
-        
-        const sendMessage = () => {
-          // 在实际应用中，这里应该发送请求到服务器并添加新的消息到messages数组
-          messages.value.push({
-            id: messages.value.length + 1,
-            user: { name: 'YourName', avatar: 'your-avatar-url.png' },
-            timestamp: new Date(),
-            content: newMessage.value,
-          });
-          newMessage.value = '';
-        };
-
-        return {
-          messages,
-          newMessage,
-          sendMessage,
-        };
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        icons: {
+          iconfont: 'mdi', // default - only for display purposes
+        },
+      }),
+      data: {
+        roomNames: ["心灵港湾", "抑郁症支持小组", "焦虑自助论坛", "情绪管理交流室", "压力释放空间", "自尊心建设营", "积极心态工作坊", "心理健康启航", "情感调适中心", "幸福生活讨论区"],
+        currentRoom: '',
+        username: '',
+        messages: [],
+        newMessage: '',
+        newEmotion: ''
       },
-    });
-
-    // 注册并使用Vuetify
-    app.use(Vuetify);
-
-    app.mount('#app');
+      methods: {
+        sendMessage: function() {
+          if (this.newMessage.trim() !== '') {
+            // 将消息添加到消息列表
+            this.messages.push(this.newMessage);
+            // 清空输入框
+            this.newMessage = '';
+          }
+        },
+        sendImage: function() {
+          // 在这里添加发送图片的逻辑
+        },
+        sendEmotion: function() {
+          // 在这里添加发送表情的逻辑
+        }
+      }
+    })
   </script>
+
 </body>
 </html>

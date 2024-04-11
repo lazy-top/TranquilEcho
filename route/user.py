@@ -109,4 +109,20 @@ def change_password():
     db.session.commit()
     db.session.close()
     
-            
+@userbp.route('/get_resport', methods=['GET'])
+@jwt_required()
+def get_resport():
+    cruent_user = get_jwt_identity()
+    
+    """
+    获取报表
+    ---
+    tags:
+        - 用户相关接口
+    description: 获取报表
+    """    
+    return CustomResponse(
+        status_code=200, 
+        data={'resport':'resport'},
+        message='resport'
+    ).to_response()       
