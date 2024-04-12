@@ -92,7 +92,8 @@ def speech_to_text():
     if not audio_data:
         return jsonify(error='No audio file provided'), 400
     try:
-        # 使用gTTS库将语音转换为文本
+        # 将语音转换为文本
+        
         
         pass
 

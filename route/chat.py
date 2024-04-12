@@ -36,13 +36,14 @@ def chat_with_llama():
 def select_api():
     user_message = request.json.get('message',[])
     choice =selector(user_message)
-    # 验证choice是否是枚举
-    if choice not in selector.choices:
+    # 验证choice是否为枚举类型
+    if choice is None:
         return CustomResponse(
             message='控制中心反馈',
             data={"choice":choice},
-            status_code=400
+            status_code=200
         ).to_response()
+    
     return CustomResponse(
         message='控制中心反馈',
         data={"choice":choice.value},

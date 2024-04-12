@@ -9,9 +9,7 @@ from utils import siwa
 # 第一步，选择10个固有的房间，进入放入房间前，弹出输入框选择匿名的名称
 # 第二步，选择房间，进入房间后，可以自由交流，可以发图片，文本，表情。
 groupbp = Blueprint('group', __name__, url_prefix='/group')
-@groupbp.route('/ui', methods=['GET'])
-def ui():
-    return render_template('group.html')
+
 
 socketio = SocketIO()  # Assuming socketio instance is initialized somewhere else
 

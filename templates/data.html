@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 引入 Vuetify 的 CSS -->
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/css/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- App.vue 根组件 -->
+
+        <v-app>
+            <v-app-bar app>
+                <v-toolbar-title>心理疾病数据分析</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="toggleSidebar">
+                    <v-icon>mdi-menu</v-icon>
+                </v-btn>
+            </v-app-bar>
+            <v-main>
+                <v-navigation-drawer v-model="drawer" app>
+                    <v-list>
+                      <v-list-item v-for="(item, index) in items" :key="index" link>
+                        <v-list-item-action>
+                          <v-icon>{{ item.icon }}</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-navigation-drawer>
+                  <v-container>
+                    
+                  </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <!-- 引入 Vue 和 Vuetify 的 JS -->
+    <script src="../static/js/vue.js"></script>
+    <script src="../static/js/vuetify.js"></script>
+    <script src="../static/js/socket.io.min.js"></script>
+    <script src="../static/js/vuex.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                icons: {
+                    iconfont: 'mdi', // 默认图标集
+                },
+            }),
+            data: {
+                items: [
+        { title: '心理指标分析', icon: 'mdi-chart-bar' },
+        { title: '时间趋势分析', icon: 'mdi-chart-line' },
+  
+      ]
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 引入 Vuetify 的 CSS -->
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/css/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- App.vue 根组件 -->
+
+        <v-app>
+            <v-container fluid>
+                <v-row align="center" justify="center">
+                    <v-col cols="8" sm="6" md="4">
+                        <v-card elevation="0">
+                            <v-card-title class="text-center">
+                                <h2 style="width: 100%;">注册</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-form ref="registerForm" v-model="valid" lazy-validation>
+                                    <v-text-field label="用户名" required :rules="usernameRules"
+                                        v-model="userDetails.username" outlined></v-text-field>
+                                    <v-text-field label="邮箱" required type="email" :rules="emailRules"
+                                        v-model="userDetails.email" outlined></v-text-field>
+                                    <v-text-field label="密码" type="password" required :rules="passwordRules"
+                                        v-model="userDetails.password" outlined></v-text-field>
+                                    <v-text-field label="确认密码" type="password" required :rules="confirmPasswordRules"
+                                        v-model="userDetails.confirmPassword" outlined></v-text-field>
+                                    <div class="d-flex align-center justify-space-between">
+                                        <div style="display: flex; align-items: center;">
+
+                                            <v-checkbox label="我同意" v-model="agreedToTerms"></v-checkbox>
+                                            <a href="/Privacy_Policy" target="_blank" class="mx-2">服务条款和隐私政策</a>
+                                        </div>
+                                        <div class="text-center">
+                                            已经有账号? <a href="/login">立即登录</a>
+                                        </div>
+
+                                    </div>
+                                </v-form>
+                            </v-card-text>
+                            <v-card-text>
+                                <v-btn color="primary" :disabled="!valid" @click="submitRegistration"
+                                    style="width: 100%;">注册</v-btn>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+
+        </v-app>
+    </div>
+
+    <!-- 引入 Vue 和 Vuetify 的 JS -->
+    <script src="../static/js/vue.js"></script>
+    <script src="../static/js/vuetify.js"></script>
+    <script src="../static/js/vuex.min.js"></script>
+    <script src="../static/js/axios.min.js"></script>
+    <style>
+        .d-flex {
+            display: flex;
+        }
+
+        .align-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+    </style>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                icons: {
+                    iconfont: 'mdi', // 默认图标集
+                },
+            }),
+            data() {
+                return {
+                    userDetails: {
+                        username: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: ''
+                    },
+                    agreedToTerms: false,
+                    valid: false,
+                    usernameRules: [
+                        v => !!v || '用户名不能为空',
+                        // 可添加其他规则，如长度限制、特殊字符要求等
+                    ],
+                    emailRules: [
+                        v => !!v || '邮箱不能为空',
+                        v => /.+@.+\..+/.test(v) || 'Invalid email format'
+                    ],
+                    passwordRules: [
+                        v => !!v || '密码不能为空',
+                        // 可添加其他规则，如长度限制、特殊字符要求等
+                    ],
+                    confirmPasswordRules: [
+                        v => !!v || '密码不能为空',
+                        (v, self) => v === this.userDetails.password || '密码不一致'
+                    ]
+                }
+
+
+            },
+            methods: {
+                submitRegistration() {
+                    if (this.$refs.registerForm.validate()) {
+                        // 发送注册请求至后端 API，使用 this.userDetails 作为请求数据
+                        // 示例：
+                        axios.post('/user/register', this.userDetails)
+                            .then(response => {
+                                // 处理注册成功逻辑，如显示成功消息、跳转至登录页面等
+                            })
+                            .catch(error => {
+                                // 处理注册失败逻辑，如显示错误消息、重置表单等
+                            });
+                    }
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>

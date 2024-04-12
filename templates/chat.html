@@ -1,74 +1,161 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/reset.css">
-    <link rel="stylesheet" href="../static/css/chat.css">
-    <title>心聆守护</title>
-    <script src="../static/js/chat.js"></script>
-</head>
-<body>
-    <div class="container clearfix">
-        <!-- 左侧导航栏 -->
-        <div class="left-bar leftfix">
-            <!--左侧logo区 -->
-            <div class="logo"><img src="../static/other/green-logo.png" alt=""></div>
-            <div class="history">
-                <div class="title"><span class="iconfont">&#xe620;</span>历史记录</div>
-            </div>
-            <div class="character">
-                <img src="../static/other/人物形象1.png" alt="">
-            </div>
-        </div>
-        <!-- 右侧导航栏 -->
-        <div class="right-bar rightfix">
-            <div class="top-nav-bar clearfix">
-                <!-- 新建对话 -->
-                <div class="new-dialog rightfix">
-                    <span class="iconfont">&#xe664;</span>
-                    <a href="#">新建对话</a>
-                </div>
-                 <!-- 预约心理咨询 -->
-                 <div class="oppointment rightfix">
-                    <span class="iconfont">&#xe680;</span>
-                    <a href="#">预约心理咨询</a>
-                </div>
-                 <!-- 生成评估报告 -->
-                 <div class="report rightfix">
-                    <span class="iconfont">&#xe675;</span>
-                    <a href="#">生成评估报告</a>
-                </div>
-                <!-- 社区论坛 -->
-                <div class="community rightfix">
-                    <span class="iconfont">&#xe668;</span>
-                    <a href="#">社区论坛</a>
-                </div>
-                 <!-- 沉浸模式 -->
-                 <div class="immerse rightfix">
-                    <span class="iconfont">&#xe69d;</span>
-                    <a href="../13_沉浸模式/component.html">沉浸模式</a>
-                </div>
-            </div>
+<html>
 
-            <!-- 交流页面 -->
-            <div class="mainer">
-                <div class="chat-list"></div>
-                <form action="https://www.baidu.com" id="myTextarea">
-                    <!-- 输入框 -->
-                    <textarea name="input" id="input" cols="30" rows="4" autofocus placeholder="可通过shift+enter换行，点击语音图标即可开启语音输入"></textarea>
-                    <!-- 语音输入 -->
-                    <button type="submit" class="voice">
-                        <span class="iconfont">&#xe610;</span>
-                    </button>
-                    <!-- 发送按钮 -->
-                    <button type="submit" class="submit">
-                        <span class="iconfont">&#xe614;</span>
-                    </button>
-                </form>
-                <footer>内容由AI生成，仅供参考，请遵守<a href="../15_用户协议/contract.html">《心聆守护用户协议》</a>和<a href="../18_隐私政策/index.html">《隐私政策》</a></footer>
-            </div>
-        </div>
+<head>
+    <!-- 引入 Vuetify 的 CSS -->
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/css/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- App.vue 根组件 -->
+
+        <v-app>
+            <v-row no-gutters>
+                <!-- 左侧框 -->
+                <v-col cols="2">
+                    <v-card class="fill-height">
+                        <!-- 这里放置左侧内容 -->
+                        <v-btn color="white" block @click="createChat" elevation="0">
+                            <v-icon left>mdi-plus</v-icon> <!-- 左侧图标 -->
+                            创建新聊天
+                            <v-icon right>mdi-arrow-right</v-icon> <!-- 右侧图标 -->
+                        </v-btn>
+
+                        <!-- 底部 div -->
+                        <div class="bottom-div">
+                            <v-btn color="white" block @click="me" elevation="0">
+                                <v-avatar size="24">
+                                    <img src="your-avatar-image-url" alt="Avatar">
+                                </v-avatar>
+                                <span>按钮文字</span>
+                            </v-btn>
+                        </div>
+                    </v-card>
+                </v-col>
+
+                <!-- 右侧框 -->
+                <v-col cols="10">
+                    <v-card class="fill-height">
+                        <!-- 添加展开左侧工具栏的按钮 -->
+                        <v-btn v-if="isSmallScreen && !drawer" fab dark fixed top right @click="toggleDrawer">
+                            <v-icon>{{ drawer ? 'mdi-chevron-left' : 'mdi-chevron-right' }}</v-icon>
+                        </v-btn>
+
+                        <!-- 这里放置右侧内容 -->
+                        <div class="bottom-div">
+                            <div class="chat-input">
+                                <v-textarea v-model="message" counter label="输入消息..." :rules="rules" :value="value"
+                                    outlined dense clearable append-icon="mdi-send" @click:append="sendMessage"
+                                    no-resize style="max-height: 200px"></v-textarea>
+                            </div>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-app>
     </div>
+    <style>
+        .chat-input {
+            padding: 20px;
+        }
+
+        .bottom-div {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        .resize-none {
+            resize: none;
+        }
+
+        .custom-scrollbar-y {
+            overflow-y: auto;
+            max-height: 300px;
+            /* 设置最大高度以显示滚动条 */
+        }
+
+        .custom-scrollbar-y::-webkit-scrollbar {
+            width: 8px;
+            /* 设置滚动条的宽度 */
+        }
+
+        .custom-scrollbar-y::-webkit-scrollbar-thumb {
+            background-color: #888;
+            /* 设置滚动条滑块的背景颜色 */
+            border-radius: 4px;
+            /* 设置滚动条滑块的圆角 */
+        }
+
+        .custom-scrollbar-y::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+            /* 设置滚动条轨道的背景颜色 */
+        }
+    </style>
+    <!-- 引入 Vue 和 Vuetify 的 JS -->
+    <script src="../static/js/vue.js"></script>
+    <script src="../static/js/vuetify.js"></script>
+    <script src="../static/js/socket.io.min.js"></script>
+    <script src="../static/js/vuex.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                icons: {
+                    iconfont: 'mdi', // 默认图标集
+                },
+            }),
+            data: {
+                items: [
+                    'Item 1',
+                    'Item 2',
+                    'Item 3',
+                    'Item 4',
+                    'Item 5',
+                    'Item 6',
+                    'Item 7',
+                    'Item 8',
+                    'Item 9',
+                    'Item 10',
+                    // 添加更多项...
+                ],
+                message: '',
+                drawer: true, // 控制左侧工具栏的展开与收起
+                isSmallScreen: false
+
+            },
+            mounted() {
+                window.addEventListener("resize", this.checkScreenWidth);
+                this.checkScreenWidth();
+            },
+            methods: {
+                sendMessage() {
+                    // 在这里添加发送消息的逻辑
+                    console.log("发送消息:", this.message);
+                    // 清空输入框
+                    this.message = '';
+                },
+                checkScreenWidth() {
+                    this.isSmallScreen = window.innerWidth < 960; // 调整阈值以适应你的需要
+                },
+                toggleDrawer() {
+                    this.drawer = !this.drawer;
+                }
+            },
+            beforeDestroy() {
+                window.removeEventListener("resize", this.checkScreenWidth);
+            }
+
+        })
+    </script>
+
 </body>
+
 </html>

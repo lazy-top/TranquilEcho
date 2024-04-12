@@ -32,20 +32,39 @@ def create_app():
     socketio.init_app(app)
     siwa.init_app(app)
     cors.init_app(app)
+    
+    
+    
     @app.route('/')
     def index_ui():
         return render_template('index.html')
     @app.route('/login')
     def login_ui():
      return render_template('login.html')
-    @app.route('/ui/contract')
+    @app.route('/contact')
     def contract_ui():
-     return render_template('contract.html')
-    @app.route('/ui/Privacy_Policy')
+     return render_template('contact.html')
+    @app.route('/Privacy_Policy')
     def Privacy_Policy_ui():
      return render_template('Privacy_Policy.html')
-
-
+    @app.route('/register')
+    def register_ui():
+     return render_template('register.html')
+    @app.route('/chat')
+    def chat_ui():
+     return render_template('chat.html')
+    @app.route('/group')
+    def group_ui():
+        return render_template('group.html')
+    @app.route('/about')
+    def about_ui():
+        return render_template('about.html')
+    @app.route('/services')
+    def services_ui():
+        return render_template('services.html')
+    @app.route('/data')
+    def visitor_ui():
+        return render_template('data.html')
 
     # ...注册蓝图和其他应用配置...
 

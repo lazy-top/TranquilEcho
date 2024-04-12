@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 引入 Vuetify 的 CSS -->
+  <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="../static/css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+
+  <div id="app">
+    <!-- App.vue 根组件 -->
+
+    <v-app>
+        <v-main>
+            <v-container>
+              <!-- 联系我们页面标题 -->
+              <div class="contact-title">
+                <h1 class="display-1">联系我们</h1>
+                <p class="subtitle-1">如果您有任何问题或建议，请随时联系我们。</p>
+              </div>
+        
+              <!-- 联系方式 -->
+              <div class="contact-info">
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-card class="contact-card" elevation="0">
+                      <v-card-text>
+                        <h2 class="headline">公司地址</h2>
+                        <p>123 Main Street, City, Country</p>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-card class="contact-card" elevation="0">
+                      <v-card-text>
+                        <h2 class="headline">联系电话</h2>
+                        <p>+123 456 7890</p>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-container>
+          </v-main>
+    </v-app>
+  </div>
+
+  <!-- 引入 Vue 和 Vuetify 的 JS -->
+  <script src="../static/js/vue.js"></script>
+  <script src="../static/js/vuetify.js"></script>
+  <script src="../static/js/socket.io.min.js"></script>
+  <script src="../static/js/vuex.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        icons: {
+          iconfont: 'mdi', // 默认图标集
+        },
+      }),
+      data: {
+        name: 'ContactUs',
+
+      },
+      methods: {
+
+      }
+    })
+  </script>
+
+</body>
+</html>

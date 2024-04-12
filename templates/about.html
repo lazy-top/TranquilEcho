@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 引入 Vuetify 的 CSS -->
+  <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="../static/css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+
+  <div id="app">
+    <!-- App.vue 根组件 -->
+
+    <v-main>
+        <v-container>
+          <!-- 公司简介 -->
+          <div class="about-section">
+            <h1 class="display-1 mb-5">关于我们</h1>
+            <p class="subtitle-1">我们是一家致力于提供最优质服务的公司。通过不断的创新和努力，我们致力于为客户提供最好的解决方案。</p>
+            <p class="subtitle-1">我们的团队由一群充满激情和才华的人组成，他们不断追求卓越，为客户创造价值。</p>
+          </div>
+    
+          <!-- 团队成员 -->
+          <div class="team-section mt-10">
+            <h2 class="display-2 mb-5">我们的团队</h2>
+            <v-row>
+              <v-col cols="12" md="4" v-for="(member, index) in team" :key="index">
+                <v-card class="team-card" elevation="0">
+                  <v-card-text>
+                    <h3 class="headline">{{ member.name }}</h3>
+                    <p>{{ member.position }}</p>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
+        </v-container>
+      </v-main>
+  </div>
+<style>
+    .about-section {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.team-section {
+  text-align: center;
+}
+
+.team-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.team-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
+  <!-- 引入 Vue 和 Vuetify 的 JS -->
+  <script src="../static/js/vue.js"></script>
+  <script src="../static/js/vuetify.js"></script>
+  <script src="../static/js/socket.io.min.js"></script>
+  <script src="../static/js/vuex.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        icons: {
+          iconfont: 'mdi', // 默认图标集
+        },
+      }),
+      data() {
+        return {
+      team: [
+        { name: '张三', position: '创始人' },
+        { name: '李四', position: '首席执行官' },
+        { name: '王五', position: '设计师' },
+        { name: '赵六', position: '开发工程师' }
+        // 添加更多团队成员
+      ]
+    }
+
+      },
+      methods: {
+
+      }
+    })
+  </script>
+
+</body>
+</html>

@@ -10,68 +10,125 @@
     .warm-gradient {
       background: linear-gradient(45deg, #FFB74D, #FF8A65);
     }
+
     .v-application--wrap {
       transition: background-color 0.5s;
     }
+
     .v-btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <v-app class="warm-gradient">
-      <v-container class="pa-5">
-        <!-- 登录卡片 -->
-        <v-card class="mb-5 elevation-12">
-          <v-card-title class="headline">登录</v-card-title>
-          <v-card-text>
-            <v-form>
-              <v-text-field label="邮箱" required solo></v-text-field>
-              <v-text-field label="密码" type="password" required solo></v-text-field>
-              <v-btn color="primary accent-4" class="mr-4">登录</v-btn>
-              <v-btn text @click="showRegister = true">没有账号？注册</v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
 
-        <!-- 注册对话框 -->
-        <v-dialog v-model="showRegister" persistent max-width="600px">
-          <v-card>
-            <v-card-title class="headline">注册新账号</v-card-title>
-            <v-card-text>
-              <v-form>
-                <v-text-field label="用户名" required solo></v-text-field>
-                <v-text-field label="邮箱" required solo></v-text-field>
-                <v-text-field label="密码" type="password" required solo></v-text-field>
-                <v-text-field label="确认密码" type="password" required solo></v-text-field>
-                <v-btn color="deep-orange accent-4" class="mr-4">注册</v-btn>
-                <v-btn text @click="showRegister = false">取消</v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
+    <v-app class="warm-gradient">
+      <v-container fluid>
+        <v-row align="center" justify="center">
+          <v-col cols="8" sm="6" md="4">
+            <v-card elevation="0">
+              <v-card-title class="text-center">
+                <h2 style="width: 100%;">登录</h2>
+              </v-card-title>
+              <v-card-text>
+                <v-form ref="loginForm" v-model="valid" lazy-validation>
+                  <v-text-field label="用户名或者邮箱" required :rules="usernameRules"
+                    v-model="credentials.username" outlined></v-text-field>
+                  <v-text-field label="密码" type="password" required :rules="passwordRules"
+                    v-model="credentials.password" outlined></v-text-field>
+
+                  <div >
+                    <v-form>
+                      <div class="d-flex justify-space-between align-center">
+                        <v-checkbox label="记住我" v-model="rememberMe"></v-checkbox>
+                        <div>
+                          <a href="/forgot-password">忘记密码?</a>
+                        </div>
+                      </div>
+                      <v-btn color="primary" :disabled="!valid" @click="submitLogin" style=" width: 100%;">登录</v-btn>
+                      <div>
+                        没有账号?
+                        <a href="/register">立即注册</a>
+
+                      </div>
+                    </v-form>
+                  </div>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
+      <v-snackbar v-model="showToast" :timeout="2000" color="orange" :top="true" style="text-align: center;">
+        {{ errorMessage }}
+      </v-snackbar>
     </v-app>
   </div>
+  <style>
 
+
+  </style>
   <!-- 引入 Vue 和 Vuetify 的 JS -->
   <script src="../static/js/vue.js"></script>
   <script src="../static/js/vuetify.js"></script>
-
+  <script src="../static/js/axios.min.js"></script>
+  <script src="../static/js/vue-router.global.js"></script>
   <script>
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
       data() {
         return {
-          showRegister: false
+          showToast: false,
+          errorMessage: '账号密码错误',
+          showRegister: false,
+          credentials: {
+            username: '',
+            password: ''
+          },
+          rememberMe: false,
+          valid: false,
+          usernameRules: [
+            v => !!v || '用户名不能为空',
+            // 
+
+          ],
+          passwordRules: [
+            v => !!v || '密码不能为空',
+            // 可添加其他规则，如长度限制、特殊字符要求
+            v => /^[a-zA-Z0-9_-]{6,16}$/.test(v) || '密码格式不正确'
+          ]
         };
       },
       methods: {
         // 在这里添加方法
+        submitLogin() {
+          if (this.$refs.loginForm.validate()) {
+            // 发送登录请求至后端 API，使用 this.credentials 作为请求数据
+            axios.post('/user/login', this.credentials)
+              .then(response => {
+                res = response.response.data;
+                // 处理登录成功逻辑，如保存 token、跳转至首页等
+                if (res.code == 200) {
+                  // 登录成功，保存 token 到本地存储
+                  localStorage.setItem('token', res.data.access_token);
+                  // 跳转至首页
+                  this.$router.push('/chat');
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                // 获取error返回的response的数据
+                res = error.response.data;
+                // 使用vuetify的提示框,展示错误信息
+                this.errorMessage = res.msg;
+                this.showToast = true;
+              });
+          }
+        }
       }
     });
   </script>
