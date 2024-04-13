@@ -15,31 +15,32 @@
 
         <v-app>
             <div>
-                <v-app-bar app color="white lighten-4" class="elevation-0" flat>
-                    <v-toolbar-title>心聆守护</v-toolbar-title>
-                    <!-- 加上空隙 -->
+                <div id="top-bar" class="transparent-bar">
+                    <v-app-bar app color="white lighten-4" class="elevation-0" flat>
+                        <v-toolbar-title>心聆守护</v-toolbar-title>
+                        <!-- 加上空隙 -->
 
-                    <v-btn text @click="">首页</v-btn>
-                    <v-btn text @click="goToPage('/services')">功能介绍</v-btn>
-                    <v-btn text @click="goToPage('/Privacy_Policy')">隐私政策</v-btn>
-                    <v-menu offset-y>
-                        <template v-slot:activator="{ on }">
-                            <v-btn text v-on="on">更多</v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item v-for="item in morePages" :key="item.title" @click="goToPage(item.route)">
-                                <v-list-item-title>{{ item.title }}</v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-                    <v-spacer></v-spacer>
+                        <v-btn text @click="">首页</v-btn>
+                        <v-btn text @click="goToPage('/services')">功能介绍</v-btn>
+                        <v-btn text @click="goToPage('/Privacy_Policy')">隐私政策</v-btn>
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn text v-on="on">更多</v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item v-for="item in morePages" :key="item.title" @click="goToPage(item.route)">
+                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-spacer></v-spacer>
 
-                    <v-btn text @click="goToPage('/chat')">立即体验</v-btn>
-                    <v-btn text @click="goToPage('/login')">登录</v-btn>
-                </v-app-bar>
-                <v-divider></v-divider>
+                        <v-btn text @click="goToPage('/create')">立即体验</v-btn>
+                        <v-btn text @click="goToPage('/login')">登录</v-btn>
+                    </v-app-bar>
+                    <v-divider></v-divider>
+                </div>
             </div>
-
 
 
 
@@ -53,7 +54,7 @@
                         <video src="../static/other/bacvideo.mp4" autoplay loop muted></video>
                         <!-- 公司名称 -->
                         <div class="company-name">
-                            <h1 style="color: white;" >心聆守护:个性化的
+                            <h1 style="color: white;">心聆守护:个性化的
                                 心理咨询大模型</h1>
                             <!-- 一键体验按钮 -->
                             <v-btn outlined color="white" class="transparent-btn" style="font-size: 1.5rem;"
@@ -63,8 +64,36 @@
 
                     <!-- 主要内容 -->
                     <div class="text-center mt-5">
-                        <h2 class="display-1"class="text-center">欢迎来到心聆守护！</h2>
-                        <p class="subtitle-1">在这里，我们为您提供最优质的服务。</p>
+                        <h2 class="display-1" class="text-center">欢迎来到心聆守护！</h2>
+                        <v-col cols="12">
+                            <h1 class="display-3 text-center  mb-4">怎么进行工作？</h1>
+                        </v-col>
+                        <v-row>
+                            <v-col cols="6">
+                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
+                            </v-col>
+                            <v-col cols="6">
+                                <span>Your text goes here</span>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                <span>Your text goes here</span>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
+                            </v-col>
+                        </v-row>
+
+
+                        <v-row>
+                            <v-col cols="6">
+                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
+                            </v-col>
+                            <v-col cols="6">
+                                <span>Your text goes here</span>
+                            </v-col>
+                        </v-row>
                         <v-timeline>
                             <!-- 2024年1月份 -->
                             <v-timeline-item>
@@ -124,35 +153,51 @@
                         </v-timeline>
 
 
-   
-                          
+
+
                     </div>
                 </v-container>
             </v-main>
             <v-footer dark padless style="width: 100%;">
-                <v-card flat tile class="indigo lighten-1 white--text text-center"style="width: 100%;">
-                  <v-card-text>
-                    <v-btn v-for="icon in icons" :key="icon" class="mx-4 white--text" icon>
-                      <v-icon size="24px">{{ icon }}</v-icon>
-                    </v-btn>
-                  </v-card-text>
-              
-                  <v-card-text class="white--text pt-0">
-                    <h2 class="headline">关于我们 - 心聆守护</h2>
-                    <p>我们致力于提供最优质的心理健康服务，帮助用户更好地管理情绪、缓解压力，实现心理健康与幸福。</p>
-                  </v-card-text>
-              
-                  <v-divider></v-divider>
-              
-                  <v-card-text class="white--text">
-                    {{ new Date().getFullYear() }} — <strong>心聆守护</strong>
-                  </v-card-text>
+                <v-card flat tile class="indigo lighten-1 white--text text-center" style="width: 100%;">
+                    <v-card-text>
+                        <v-btn v-for="icon in icons" :key="icon" class="mx-4 white--text" icon>
+                            <v-icon size="24px">{{ icon }}</v-icon>
+                        </v-btn>
+                    </v-card-text>
+
+                    <v-card-text class="white--text pt-0">
+                        <h2 class="headline">关于我们 - 心聆守护</h2>
+                        <p>我们致力于提供最优质的心理健康服务，帮助用户更好地管理情绪、缓解压力，实现心理健康与幸福。</p>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-text class="white--text">
+                        {{ new Date().getFullYear() }} — <strong>心聆守护</strong>
+                    </v-card-text>
                 </v-card>
-              </v-footer>
+            </v-footer>
         </v-app>
     </div>
     <style>
         /* 添加自定义样式 */
+        .transparent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            /* 确保在其他内容之上 */
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+            /* 添加过渡效果 */
+        }
+
+        .white-background {
+            background-color: white !important;
+        }
+
         .video-container {
             position: relative;
             width: 100vw;
@@ -183,7 +228,19 @@
     <script src="../static/js/vuetify.js"></script>
     <script src="../static/js/socket.io.min.js"></script>
     <script src="../static/js/vuex.min.js"></script>
+    <script>
+        window.addEventListener('scroll', function () {
+            var topBar = document.getElementById('top-bar');
+            var videoContainer = document.querySelector('.video-container');
+            var threshold = videoContainer.offsetHeight;
 
+            if (window.scrollY > threshold) {
+                topBar.classList.add('white-background');
+            } else {
+                topBar.classList.remove('white-background');
+            }
+        });
+    </script>
     <script>
         new Vue({
             el: '#app',
@@ -211,6 +268,7 @@
                 ]
 
             },
+
             methods: {
                 goToPage(route) {
                     // 在新页面打开链接
@@ -219,7 +277,7 @@
                 },
                 startExperience() {
                     // 点击一键体验按钮的操作
-                    window.open('/chat', '_blank');
+                    window.open('/create', '_blank');
                 }
             }
         })

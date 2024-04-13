@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 引入 Vuetify 的 CSS -->
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/css/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- App.vue 根组件 -->
+        <v-app class="warm-gradient">
+            <v-container fluid>
+                <v-row align="center" justify="center">
+                    <v-col cols="8" sm="6" md="4">
+                        <v-card elevation="0">
+                            <v-card-title class="text-center">
+                                <h2 style="width: 100%;">创建新助手</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                <!-- 消息列表 -->
+                                <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
+                                    <v-row v-for="(message, index) in messages" :key="index">
+                                        <v-col cols="auto">
+                                            <v-avatar size="40">
+                                                <img :src="message.sender === 'robot' ? '../static/other/a-lovely-robot.png' : '../static/other/a-lovely-human-being.png'"
+                                                    alt="Avatar">
+                                            </v-avatar>
+                                        </v-col>
+                                        <v-col>
+                                            <div>
+                                                <span style="font-weight: bold;">{{ message.sender === 'robot' ? '小海' :
+                                                    '你' }}</span>
+                                            </div>
+                                            <div>
+                                                <span>{{ message.content }}</span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                            <!-- 输入框固定在底部 -->
+                            <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: white;">
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field v-model="newMessage" label="输入消息" outlined full-width
+                                            append-icon="mdi-send" @click:append="sendMessage"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </div>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-app>
+    </div>
+    
+
+    <!-- 引入 Vue 和 Vuetify 的 JS -->
+    <script src="../static/js/vue.js"></script>
+    <script src="../static/js/vuetify.js"></script>
+    <script src="../static/js/socket.io.min.js"></script>
+    <script src="../static/js/vuex.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                icons: {
+                    iconfont: 'mdi', // 默认图标集
+                },
+            }),
+            data: {
+                messages: [
+                    { sender: 'robot', content: "你好，我是你的机器人，有什么可以帮助你的吗？" }
+                ],
+                newMessage: ""
+
+            },
+            methods: {
+                sendMessage() {
+                    if (this.newMessage !== "") {
+                        this.messages.push({ sender: 'human', content: this.newMessage });
+                        this.newMessage = ""; // 清空输入框
+                    }
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>

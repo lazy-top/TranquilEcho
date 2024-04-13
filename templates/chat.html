@@ -19,17 +19,17 @@
                 <v-col cols="2">
                     <v-card class="fill-height">
                         <!-- 这里放置左侧内容 -->
-                        <v-btn color="white" block @click="createChat" elevation="0">
+                        <v-btn color="white" block @click="create" elevation="0">
                             <v-icon left>mdi-plus</v-icon> <!-- 左侧图标 -->
-                            创建新聊天
+                            创建新助手
                             <v-icon right>mdi-arrow-right</v-icon> <!-- 右侧图标 -->
                         </v-btn>
 
                         <!-- 底部 div -->
                         <div class="bottom-div">
-                            <v-btn color="white" block @click="me" elevation="0">
-                                <v-avatar size="24">
-                                    <img src="your-avatar-image-url" alt="Avatar">
+                            <v-btn color="white" block @click="me" elevation="0" style="width: 100%;">
+                                <v-avatar size="24"left>
+                                    <img src="../static/other/a-lovely-human-being.png" alt="Avatar">
                                 </v-avatar>
                                 <span>按钮文字</span>
                             </v-btn>
@@ -41,14 +41,34 @@
                 <v-col cols="10">
                     <v-card class="fill-height">
                         <!-- 添加展开左侧工具栏的按钮 -->
-                        <v-btn v-if="isSmallScreen && !drawer" fab dark fixed top right @click="toggleDrawer">
-                            <v-icon>{{ drawer ? 'mdi-chevron-left' : 'mdi-chevron-right' }}</v-icon>
-                        </v-btn>
-
+                        <v-app-bar
+                        elevation="0"
+                        outlined
+                      ></v-app-bar>
+                               <!-- 消息列表 -->
+                               <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
+                                <v-row v-for="(message, index) in messages" :key="index">
+                                    <v-col cols="auto">
+                                        <v-avatar size="40">
+                                            <img :src="message.sender === 'robot' ? '../static/other/a-lovely-robot.png' : '../static/other/a-lovely-human-being.png'"
+                                                alt="Avatar">
+                                        </v-avatar>
+                                    </v-col>
+                                    <v-col>
+                                        <div>
+                                            <span style="font-weight: bold;">{{ message.sender === 'robot' ? '小海' :
+                                                '你' }}</span>
+                                        </div>
+                                        <div>
+                                            <span>{{ message.content }}</span>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
                         <!-- 这里放置右侧内容 -->
                         <div class="bottom-div">
                             <div class="chat-input">
-                                <v-textarea v-model="message" counter label="输入消息..." :rules="rules" :value="value"
+                                <v-textarea v-model="newMessage" counter label="输入消息..." :rules="rules" :value="value"
                                     outlined dense clearable append-icon="mdi-send" @click:append="sendMessage"
                                     no-resize style="max-height: 200px"></v-textarea>
                             </div>
@@ -126,7 +146,10 @@
                     'Item 10',
                     // 添加更多项...
                 ],
-                message: '',
+                messages: [
+                    { sender: 'robot', content: "你好，我是你的机器人，有什么可以帮助你的吗？" }
+                ],
+                newMessage: "",
                 drawer: true, // 控制左侧工具栏的展开与收起
                 isSmallScreen: false
 
@@ -138,15 +161,19 @@
             methods: {
                 sendMessage() {
                     // 在这里添加发送消息的逻辑
-                    console.log("发送消息:", this.message);
+                    console.log("发送消息:", this.newMessage);
+                    this.messages.push({ sender: 'human', content: this.newMessage });
                     // 清空输入框
-                    this.message = '';
+                    this.newMessage = '';
                 },
                 checkScreenWidth() {
                     this.isSmallScreen = window.innerWidth < 960; // 调整阈值以适应你的需要
                 },
                 toggleDrawer() {
                     this.drawer = !this.drawer;
+                },
+                create(){
+                    window.open('/create', '_blank');
                 }
             },
             beforeDestroy() {

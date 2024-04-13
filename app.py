@@ -65,6 +65,9 @@ def create_app():
     @app.route('/data')
     def visitor_ui():
         return render_template('data.html')
+    @app.route('/create')
+    def create_ui():
+        return render_template('create.html')
 
     # ...注册蓝图和其他应用配置...
 
