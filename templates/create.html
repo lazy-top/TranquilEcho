@@ -22,7 +22,7 @@
                             </v-card-title>
                             <v-card-text>
                                 <!-- 消息列表 -->
-                                <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
+                                <v-container style="padding-bottom: 60px;height: 40vh;max-height: 40vh;overflow-y: auto;">
                                     <v-row v-for="(message, index) in messages" :key="index">
                                         <v-col cols="auto">
                                             <v-avatar size="40">
@@ -41,23 +41,22 @@
                                         </v-col>
                                     </v-row>
                                 </v-container>
+                                <div>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field v-model="newMessage"required label="输入消息" outlined full-width
+                                                append-icon="mdi-send" @click:append="sendMessage"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </div>
                             </v-card-text>
-                            <!-- 输入框固定在底部 -->
-                            <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: white;">
-                                <v-row>
-                                    <v-col cols="12">
-                                        <v-text-field v-model="newMessage" label="输入消息" outlined full-width
-                                            append-icon="mdi-send" @click:append="sendMessage"></v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </div>
                         </v-card>
                     </v-col>
                 </v-row>
             </v-container>
         </v-app>
     </div>
-    
+
 
     <!-- 引入 Vue 和 Vuetify 的 JS -->
     <script src="../static/js/vue.js"></script>
@@ -73,20 +72,55 @@
                     iconfont: 'mdi', // 默认图标集
                 },
             }),
-            data: {
-                messages: [
-                    { sender: 'robot', content: "你好，我是你的机器人，有什么可以帮助你的吗？" }
-                ],
-                newMessage: ""
-
+            data() {
+                return {
+                    messages: [
+                        { sender: 'robot', content: "你好，我是你的机器人，有什么可以帮助你的吗？" }
+                    ],
+                    newMessage: "",
+                };
             },
             methods: {
                 sendMessage() {
                     if (this.newMessage !== "") {
                         this.messages.push({ sender: 'human', content: this.newMessage });
+                        this.socket.emit('chat message', this.newMessage);
                         this.newMessage = ""; // 清空输入框
+                        //滚到底部
+                        setTimeout(() => {
+                            document.querySelector('.v-container').scrollTop = document.querySelector('.v-container').scrollHeight;
+                        }, 100);
+                        // 禁止发送消息，除非接受全部信息后
+
+
+            
                     }
                 }
+            },
+            mounted() {
+                this.socket = io.connect('http://127.0.0.1:5000'); // 连接到服务器
+                this.socket.on('bot response', (msg) => {
+                        console.log(msg);
+
+                        // 获取当前消息的长度，只创建一次的消息容器
+                        let msgLen = this.messages.length;
+                        // 检查该消息下的发送者是不是人类
+                        if(this.messages[msgLen-1].sender == 'human'){
+                            // 如果是，则创建一个机器人消息
+                            this.messages.push({
+                                sender: 'robot',
+                                content: '',
+                            });
+                        }
+                        // 找到最新一个robot消息加入到机器人消息中
+                 
+                        this.messages[this.messages.length - 1].content=msg
+
+                        
+
+                    
+
+                });
             }
         })
     </script>

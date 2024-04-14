@@ -28,7 +28,7 @@
                         <!-- 底部 div -->
                         <div class="bottom-div">
                             <v-btn color="white" block @click="me" elevation="0" style="width: 100%;">
-                                <v-avatar size="24"left>
+                                <v-avatar size="24" left>
                                     <img src="../static/other/a-lovely-human-being.png" alt="Avatar">
                                 </v-avatar>
                                 <span>按钮文字</span>
@@ -41,30 +41,27 @@
                 <v-col cols="10">
                     <v-card class="fill-height">
                         <!-- 添加展开左侧工具栏的按钮 -->
-                        <v-app-bar
-                        elevation="0"
-                        outlined
-                      ></v-app-bar>
-                               <!-- 消息列表 -->
-                               <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
-                                <v-row v-for="(message, index) in messages" :key="index">
-                                    <v-col cols="auto">
-                                        <v-avatar size="40">
-                                            <img :src="message.sender === 'robot' ? '../static/other/a-lovely-robot.png' : '../static/other/a-lovely-human-being.png'"
-                                                alt="Avatar">
-                                        </v-avatar>
-                                    </v-col>
-                                    <v-col>
-                                        <div>
-                                            <span style="font-weight: bold;">{{ message.sender === 'robot' ? '小海' :
-                                                '你' }}</span>
-                                        </div>
-                                        <div>
-                                            <span>{{ message.content }}</span>
-                                        </div>
-                                    </v-col>
-                                </v-row>
-                            </v-container>
+                        <v-app-bar elevation="0" outlined></v-app-bar>
+                        <!-- 消息列表 -->
+                        <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
+                            <v-row v-for="(message, index) in messages" :key="index">
+                                <v-col cols="auto">
+                                    <v-avatar size="40">
+                                        <img :src="message.sender === 'robot' ? '../static/other/a-lovely-robot.png' : '../static/other/a-lovely-human-being.png'"
+                                            alt="Avatar">
+                                    </v-avatar>
+                                </v-col>
+                                <v-col>
+                                    <div>
+                                        <span style="font-weight: bold;">{{ message.sender === 'robot' ? '小海' :
+                                            '你' }}</span>
+                                    </div>
+                                    <div>
+                                        <span>{{ message.content }}</span>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-container>
                         <!-- 这里放置右侧内容 -->
                         <div class="bottom-div">
                             <div class="chat-input">
@@ -156,15 +153,47 @@
             },
             mounted() {
                 window.addEventListener("resize", this.checkScreenWidth);
-                this.checkScreenWidth();
+                this.checkScreenWidth();                
+                this.socket = io.connect('http://127.0.0.1:5000'); // 连接到服务器
+                this.socket.on('bot response', (msg) => {
+                        console.log(msg);
+
+                        // 获取当前消息的长度，只创建一次的消息容器
+                        let msgLen = this.messages.length;
+                        // 检查该消息下的发送者是不是人类
+                        if(this.messages[msgLen-1].sender == 'human'){
+                            // 如果是，则创建一个机器人消息
+                            this.messages.push({
+                                sender: 'robot',
+                                content: '',
+                            });
+                        }
+                        // 找到最新一个robot消息加入到机器人消息中
+                 
+                        this.messages[this.messages.length - 1].content=msg
+
+                        
+
+                    
+
+                });
             },
             methods: {
                 sendMessage() {
                     // 在这里添加发送消息的逻辑
-                    console.log("发送消息:", this.newMessage);
-                    this.messages.push({ sender: 'human', content: this.newMessage });
-                    // 清空输入框
-                    this.newMessage = '';
+                    if (this.newMessage !== "") {
+                        this.messages.push({ sender: 'human', content: this.newMessage });
+                        this.socket.emit('chat message', this.newMessage);
+                        this.newMessage = ""; // 清空输入框
+                        //滚到底部
+                        setTimeout(() => {
+                            document.querySelector('.v-container').scrollTop = document.querySelector('.v-container').scrollHeight;
+                        }, 100);
+                        // 禁止发送消息，除非接受全部信息后
+
+
+            
+                    }
                 },
                 checkScreenWidth() {
                     this.isSmallScreen = window.innerWidth < 960; // 调整阈值以适应你的需要
@@ -172,7 +201,7 @@
                 toggleDrawer() {
                     this.drawer = !this.drawer;
                 },
-                create(){
+                create() {
                     window.open('/create', '_blank');
                 }
             },

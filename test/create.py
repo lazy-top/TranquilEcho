@@ -14,6 +14,7 @@ response = ollama.chat(
   },],
   stream=True,
                        )
+ollama.generate()
 
 for chunk in response:
   print(chunk['message']['content'], end='', flush=True)

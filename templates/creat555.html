@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 引入 Vuetify 的 CSS -->
+  <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="../static/css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+
+  <div id="app">
+    <!-- App.vue 根组件 -->
+
+    <v-app>
+        <v-container>
+            <v-form ref="form" v-model="valid">
+              <v-textarea
+                v-model="description"
+                label="请描述您的情况和个性化助手的要求"
+                :rules="descriptionRules"
+                required
+              ></v-textarea>
+              
+              <v-btn :disabled="!valid" @click="submit">提交</v-btn>
+            </v-form>
+          </v-container>
+    </v-app>
+  </div>
+
+  <!-- 引入 Vue 和 Vuetify 的 JS -->
+  <script src="../static/js/vue.js"></script>
+  <script src="../static/js/vuetify.js"></script>
+  <script src="../static/js/socket.io.min.js"></script>
+  <script src="../static/js/vuex.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        icons: {
+          iconfont: 'mdi', // 默认图标集
+        },
+      }),
+      data: () => ({
+    valid: false,
+    description: '',
+    descriptionRules: [
+      v => !!v || '描述是必填项',
+      v => (v && v.length >= 50) || '描述至少需要50个字符',
+    ],
+  }),
+  methods: {
+    submit() {
+      if (this.$refs.form.validate()) {
+        // 这里可以添加发送数据到服务器的代码
+        console.log('Form submitted with description:', this.description);
+      }
+    },
+  },
+    })
+  </script>
+
+</body>
+</html>

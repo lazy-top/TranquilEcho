@@ -38,7 +38,7 @@
                         <v-btn text @click="goToPage('/create')">立即体验</v-btn>
                         <v-btn text @click="goToPage('/login')">登录</v-btn>
                     </v-app-bar>
-                    <v-divider></v-divider>
+    
                 </div>
             </div>
 
@@ -51,111 +51,19 @@
                 <v-container fluid>
                     <!-- 视频容器 -->
                     <div class="video-container">
-                        <video src="../static/other/bacvideo.mp4" autoplay loop muted></video>
+                        <video src="../static/other/home_back.7e0bd74c.mp4" autoplay loop muted></video>
                         <!-- 公司名称 -->
                         <div class="company-name">
-                            <h1 style="color: white;">心聆守护:个性化的
-                                心理咨询大模型</h1>
+                            <h1 class="display-3 text-center  mb-4 font-weight-medium" style="cursor: pointer;">心聆守护</h1>
+                            <span>个性化的心理咨询大模型</span>
                             <!-- 一键体验按钮 -->
-                            <v-btn outlined color="white" class="transparent-btn" style="font-size: 1.5rem;"
-                                @click="startExperience">一键体验</v-btn>
-                        </div>
+                        
+                            <v-btn  class="transparent-btn indigo lighten-1 white--text " style="font-size: 1.5rem;cursor: pointer;"
+                                @click="startExperience">立即体验</v-btn>
+                            </div>
                     </div>
 
-                    <!-- 主要内容 -->
-                    <div class="text-center mt-5">
-                        <h2 class="display-1" class="text-center">欢迎来到心聆守护！</h2>
-                        <v-col cols="12">
-                            <h1 class="display-3 text-center  mb-4">怎么进行工作？</h1>
-                        </v-col>
-                        <v-row>
-                            <v-col cols="6">
-                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
-                            </v-col>
-                            <v-col cols="6">
-                                <span>Your text goes here</span>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col cols="6">
-                                <span>Your text goes here</span>
-                            </v-col>
-                            <v-col cols="6">
-                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
-                            </v-col>
-                        </v-row>
 
-
-                        <v-row>
-                            <v-col cols="6">
-                                <v-img src="../static/other/pexels-iryna-olar-4252907.jpg" max-height="300px"></v-img>
-                            </v-col>
-                            <v-col cols="6">
-                                <span>Your text goes here</span>
-                            </v-col>
-                        </v-row>
-                        <v-timeline>
-                            <!-- 2024年1月份 -->
-                            <v-timeline-item>
-                                <template v-slot:opposite>
-                                    <v-icon>mdi-calendar-month</v-icon>
-                                </template>
-                                <v-card>
-                                    <v-card-title>2024年1月</v-card-title>
-                                    <v-card-text>
-                                        <p>启动心聆守护项目。</p>
-                                        <p>制定项目计划和目标。</p>
-                                    </v-card-text>
-                                </v-card>
-                            </v-timeline-item>
-
-                            <!-- 2024年2月份 -->
-                            <v-timeline-item class="text-right">
-                                <template v-slot:opposite>
-                                    <v-icon>mdi-calendar-month</v-icon>
-                                </template>
-                                <v-card>
-                                    <v-card-title>2024年2月</v-card-title>
-                                    <v-card-text>
-                                        <p>完成项目需求分析和设计。</p>
-                                        <p>开始系统开发和测试。</p>
-                                    </v-card-text>
-                                </v-card>
-                            </v-timeline-item>
-
-                            <!-- 2024年3月份 -->
-                            <v-timeline-item>
-                                <template v-slot:opposite>
-                                    <v-icon>mdi-calendar-month</v-icon>
-                                </template>
-                                <v-card>
-                                    <v-card-title>2024年3月</v-card-title>
-                                    <v-card-text>
-                                        <p>系统开发进入尾声，进行最后的调试和优化。</p>
-                                        <p>准备项目上线和发布。</p>
-                                    </v-card-text>
-                                </v-card>
-                            </v-timeline-item>
-
-                            <!-- 2024年4月12号 -->
-                            <v-timeline-item class="text-right">
-                                <template v-slot:opposite>
-                                    <v-icon>mdi-calendar</v-icon>
-                                </template>
-                                <v-card>
-                                    <v-card-title>2024年4月12日</v-card-title>
-                                    <v-card-text>
-                                        <p>心聆守护项目正式上线，并获得用户积极反馈。</p>
-                                        <p>开始持续性的项目维护和改进。</p>
-                                    </v-card-text>
-                                </v-card>
-                            </v-timeline-item>
-                        </v-timeline>
-
-
-
-
-                    </div>
                 </v-container>
             </v-main>
             <v-footer dark padless style="width: 100%;">
@@ -220,7 +128,8 @@
             left: 30%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            flex-direction: column
+            flex-direction: column;
+            padding: 20px;
         }
     </style>
     <!-- 引入 Vue 和 Vuetify 的 JS -->
