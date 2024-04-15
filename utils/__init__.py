@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from flask_siwadoc import SiwaDoc
 from flask_cors import CORS
-
+from langchain.prompts import PromptTemplate
 from pydantic import BaseModel
 #配置文件
 class Chat_message(BaseModel):
@@ -79,3 +79,43 @@ class CustomResponse(object):
 def validate_message(message):
     
     pass
+
+choise_propmpt=PromptTemplate.from_template("""
+                                        请仔细阅读以下用户输入，并根据输入内容选择最合适的功能模块选项。您的目标是理解用户的需求，并根据这些需求从可用的功能模块中选择最佳的选项。
+
+用户输入:
+{input}
+
+根据上述指导，大语言模型应该能够分析用户输入并生成如下功能模块选项:
+
+功能模块选项:
+1. 功能模块A: 描述功能模块A如何满足用户需求。
+2. 功能模块B: 描述功能模块B如何满足用户需求。
+3. 功能模块C: 描述功能模块C如何满足用户需求。
+
+请确保您的指导语句足够详细，以便大语言模型能够理解您的需求，并根据用户输入选择最合适的功能模块选项。如果您提供了具体的用户输入内容，我可以帮助您生成相应的功能模块选项。
+                                        """)
+assistant_prompt=PromptTemplate.from_template("""
+                                        你是一个专业的{role}，请根据用户输入，生成一个最合适的回答。
+                                        
+                                        用户输入:
+                                        {input}
+                                        
+                                        你的回答:
+                                        """)
+
+arg_prompt=PromptTemplate.from_template("""
+                                        你是一个专业的{role}，请根据用户输入，生成一个最合适的回答。
+                                        
+                                        用户输入:
+                                        {input}
+                                        
+                                        你的回答:
+                                        """)
+
+
+warning_prompt=PromptTemplate.from_template("""
+                                            
+                                            
+                                            
+                                            """)

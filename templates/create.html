@@ -22,7 +22,8 @@
                             </v-card-title>
                             <v-card-text>
                                 <!-- 消息列表 -->
-                                <v-container style="padding-bottom: 60px;height: 40vh;max-height: 40vh;overflow-y: auto;">
+                                <v-container id="message-list"
+                                    style="padding-bottom: 60px;height: 40vh;max-height: 40vh;overflow-y: auto;">
                                     <v-row v-for="(message, index) in messages" :key="index">
                                         <v-col cols="auto">
                                             <v-avatar size="40">
@@ -44,11 +45,49 @@
                                 <div>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-text-field v-model="newMessage"required label="输入消息" outlined full-width
-                                                append-icon="mdi-send" @click:append="sendMessage"></v-text-field>
+                                            <v-text-field v-model="newMessage" :disabled="disableSend" required
+                                                label="输入消息" outlined full-width clearable append-icon="mdi-send"
+                                                @click:append="sendMessage"></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </div>
+                                <div v-if="showCreateButton">
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-btn block color="primary" @click="createAssistant">创建智能体</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </div>
+                                <v-dialog v-model="loading"  persistent width="300">
+                                    <v-card color="primary" dark>
+                                        <v-card-text>
+                                            创建中...
+                                            <v-progress-linear indeterminate color="white"
+                                                class="mb-0"></v-progress-linear>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-dialog>
+
+                                <v-dialog v-model="dialog" hide-overlay persistent max-width="290">
+                                    <v-card>
+                                        <v-card-title class="text-h5">
+                                            生成自定义心理助手
+                                        </v-card-title>
+                                        <v-card-text>Let Google help apps determine location. This means sending
+                                            anonymous location data to Google, even when no apps are
+                                            running.</v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="green darken-1" text @click="dialog = false">
+                                                取消
+                                            </v-btn>
+                                            <v-btn color="green darken-1" text @click="createAssistant">
+                                                确定生成
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                                <div>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -75,53 +114,130 @@
             data() {
                 return {
                     messages: [
-                        { sender: 'robot', content: "你好，我是你的机器人，有什么可以帮助你的吗？" }
+                        { sender: 'robot', content: "你好，请你输入对于心理咨询的助手的描述、要求和你的个人情况，我将会根据你的描述为你创建一个助手。" },
                     ],
                     newMessage: "",
+                    disableSend: false, // 新增的 disableSend 属性
+                    assistant: {
+                        name: "",
+                        describe: "",
+                        func: "",
+                        user_detail: ''
+                    },
+                    loading: false,
+                    dialog: false
+
                 };
+            },
+            computed: {
+                showCreateButton() {
+                    return this.messages.filter(msg => msg.sender === 'robot').length >= 3;
+                }
             },
             methods: {
                 sendMessage() {
                     if (this.newMessage !== "") {
                         this.messages.push({ sender: 'human', content: this.newMessage });
-                        this.socket.emit('chat message', this.newMessage);
+                        this.socket.emit('chat create', this.newMessage);
                         this.newMessage = ""; // 清空输入框
-                        //滚到底部
-                        setTimeout(() => {
-                            document.querySelector('.v-container').scrollTop = document.querySelector('.v-container').scrollHeight;
-                        }, 100);
                         // 禁止发送消息，除非接受全部信息后
+                        this.messages.push({
+                            sender: 'robot',
+                            content: '生成中...',
+                        });
+                        // 禁止用户再次发送消息
+                        this.disableSend = true;
+                        // 发送消息后滚动到底部
+                        this.scrollToBottom();
 
 
-            
+                    }
+                },
+                // 滚动到底部的方法
+                scrollToBottom() {
+                    this.$nextTick(() => {
+                        const container = this.$el.querySelector('#message-list');
+                        if (container) {
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    });
+                },
+                // 热键处理函数
+                handleHotkey(event) {
+                    // Enter：发送消息
+                    if (event.keyCode === 13) {
+                        // 调用发送消息的方法
+                        this.sendMessage();
+                    }
+                    // ctrl+enter键：换行
+                    if (event.ctrlKey && event.keyCode === 13) {
+                        // 输入框换行
+
+
+                    }
+                },
+                createAssistant() {
+                    if (this.dialog === false) {          // 创建助手
+                        this.dialog = true
+                    }
+                    else {
+                        this.dialog = false,
+                            this.loading = true
+                        // 发送创建助手的请求
+                        axios.post('/api/assistant/create', {
+                            name: this.name,
+                            description: this.description,
+                            avatar: this.avatar,
+                            type: this.type,
+                            content: this.content,
+                            keywords: this.keywords,
+                            temperature: this.temperature,
+                            top_p: this.top_p,
+                            max_tokens: this.max_tokens,
+                        })
+
+
                     }
                 }
+
             },
             mounted() {
                 this.socket = io.connect('http://127.0.0.1:5000'); // 连接到服务器
                 this.socket.on('bot response', (msg) => {
-                        console.log(msg);
+                    console.log(msg);
 
-                        // 获取当前消息的长度，只创建一次的消息容器
-                        let msgLen = this.messages.length;
-                        // 检查该消息下的发送者是不是人类
-                        if(this.messages[msgLen-1].sender == 'human'){
-                            // 如果是，则创建一个机器人消息
-                            this.messages.push({
-                                sender: 'robot',
-                                content: '',
-                            });
-                        }
-                        // 找到最新一个robot消息加入到机器人消息中
-                 
-                        this.messages[this.messages.length - 1].content=msg
+                    // 获取当前消息的长度，只创建一次的消息容器
+                    let msgLen = this.messages.length;
+                    // 找到最新一个robot消息加入到机器人消息中
 
-                        
-
-                    
+                    this.messages[this.messages.length - 1].content = msg
+                    // 发送消息后滚动到底部
+                    this.scrollToBottom();
+                    // 如果消息末尾以换行结束则说明消息已经接受完毕
+                    if (this.messages[this.messages.length - 1].content.endsWith('\n')) {
+                        // 禁止用户再次发送消息
+                        this.disableSend = false;
+                    } else {
+                        this.disableSend = true;
+                    }
 
                 });
-            }
+                // 注册热键
+                window.addEventListener('keydown', this.handleHotkey);
+            },
+            beforeDestroy() {
+                // 在组件销毁前移除热键监听器
+                window.removeEventListener('keydown', this.handleHotkey);
+            },
+            watch: {
+                loading(val) {
+                    if (!val) return
+
+                    setTimeout(() => (this.loading = false,window.open('/chat')), 4000)
+                    // 跳转到chat页面
+                    
+                },
+            },
         })
     </script>
 

@@ -31,7 +31,7 @@
                                 <v-avatar size="24" left>
                                     <img src="../static/other/a-lovely-human-being.png" alt="Avatar">
                                 </v-avatar>
-                                <span>按钮文字</span>
+                                <span>个人信息</span>
                             </v-btn>
                         </div>
                     </v-card>
@@ -43,7 +43,8 @@
                         <!-- 添加展开左侧工具栏的按钮 -->
                         <v-app-bar elevation="0" outlined></v-app-bar>
                         <!-- 消息列表 -->
-                        <v-container style="padding-bottom: 60px;"> <!-- 添加底部内边距 -->
+                        <v-container style="height: 60vh;max-height: 60vh;overflow-y: auto;" id="message-list">
+                            <!-- 添加底部内边距 -->
                             <v-row v-for="(message, index) in messages" :key="index">
                                 <v-col cols="auto">
                                     <v-avatar size="40">
@@ -63,11 +64,11 @@
                             </v-row>
                         </v-container>
                         <!-- 这里放置右侧内容 -->
-                        <div class="bottom-div">
+                        <div>
                             <div class="chat-input">
-                                <v-textarea v-model="newMessage" counter label="输入消息..." :rules="rules" :value="value"
-                                    outlined dense clearable append-icon="mdi-send" @click:append="sendMessage"
-                                    no-resize style="max-height: 200px"></v-textarea>
+                                <v-textarea v-model="newMessage":disabled="disableSend" counter label="输入消息..." outlined dense clearable
+                                    append-icon="mdi-send" @click:append="sendMessage" no-resize
+                                    style="max-height: 200px"></v-textarea>
                             </div>
                         </div>
                     </v-card>
@@ -148,51 +149,50 @@
                 ],
                 newMessage: "",
                 drawer: true, // 控制左侧工具栏的展开与收起
-                isSmallScreen: false
-
+                isSmallScreen: false,
+                disableSend: false, // 新增的 disableSend 属性
             },
             mounted() {
                 window.addEventListener("resize", this.checkScreenWidth);
-                this.checkScreenWidth();                
+                this.checkScreenWidth();
                 this.socket = io.connect('http://127.0.0.1:5000'); // 连接到服务器
                 this.socket.on('bot response', (msg) => {
-                        console.log(msg);
-
-                        // 获取当前消息的长度，只创建一次的消息容器
-                        let msgLen = this.messages.length;
-                        // 检查该消息下的发送者是不是人类
-                        if(this.messages[msgLen-1].sender == 'human'){
-                            // 如果是，则创建一个机器人消息
-                            this.messages.push({
-                                sender: 'robot',
-                                content: '',
-                            });
-                        }
-                        // 找到最新一个robot消息加入到机器人消息中
-                 
-                        this.messages[this.messages.length - 1].content=msg
-
-                        
-
-                    
-
+                    // 获取当前消息的长度，只创建一次的消息容器
+                    let msgLen = this.messages.length;
+                    // 找到最新一个robot消息加入到机器人消息中
+                    this.messages[this.messages.length - 1].content = msg;
+                    // 滚动到底部
+                    this.scrollToBottom()
+                    // 如果消息末尾以换行结束则说明消息已经接受完毕
+                    if (this.messages[this.messages.length - 1].content.endsWith('\n')) {
+                        // 禁止用户再次发送消息
+                        this.disableSend = false;
+                    }else{
+                        this.disableSend = true;
+                    }
                 });
+                window.addEventListener('keydown', this.handleHotkey);
             },
             methods: {
+                // 个人信息
+                me() {
+
+
+                },
                 sendMessage() {
                     // 在这里添加发送消息的逻辑
                     if (this.newMessage !== "") {
                         this.messages.push({ sender: 'human', content: this.newMessage });
                         this.socket.emit('chat message', this.newMessage);
+                        this.messages.push({
+                            sender: 'robot',
+                            content: '生成中...',
+                        });
                         this.newMessage = ""; // 清空输入框
                         //滚到底部
-                        setTimeout(() => {
-                            document.querySelector('.v-container').scrollTop = document.querySelector('.v-container').scrollHeight;
-                        }, 100);
-                        // 禁止发送消息，除非接受全部信息后
-
-
-            
+                        this.scrollToBottom();
+                        // 禁止用户再次发送消息
+                        this.disableSend = true;
                     }
                 },
                 checkScreenWidth() {
@@ -203,10 +203,34 @@
                 },
                 create() {
                     window.open('/create', '_blank');
+                },                // 滚动到底部的方法
+                scrollToBottom() {
+                    this.$nextTick(() => {
+                        const container = this.$el.querySelector('#message-list');
+                        if (container) {
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    });
+                },
+                // 热键处理函数
+                handleHotkey(event) {
+                    // Enter：发送消息
+                    if (event.keyCode === 13) {
+                        // 调用发送消息的方法
+                        this.sendMessage();
+                    }
+                    // ctrl+enter键：换行
+                    if (event.ctrlKey && event.keyCode === 13) {
+                        // 输入框换行
+
+
+                    }
                 }
             },
             beforeDestroy() {
                 window.removeEventListener("resize", this.checkScreenWidth);
+                // 在组件销毁前移除热键监听器
+                window.removeEventListener('keydown', this.handleHotkey);
             }
 
         })

@@ -7,6 +7,7 @@ from route.chat import chatbp
 from route.audio import audiobp
 from route.group import groupbp
 from route.visitor import visitorbp
+from langchain.prompts import PromptTemplate
 import ollama
 def create_app():
     class WanmaitFlask(Flask):
@@ -49,12 +50,53 @@ def create_app():
         complete_message = ""
         for chunk in response:
             complete_message += chunk['message']['content']
-            print(complete_message)
             socketio.emit('bot response', complete_message)
             # 检查是否是完整的消息
         if chunk['message']['content'].endswith(''):
+            print(complete_message)
             complete_message = ""  # 重置消息内容
+    @socketio.on('chat create')
+    def handle_create(msg):
+        # 提示词帮助大模型来回答问题
+        prompt= PromptTemplate.from_template("""
+请仔细阅读以下用户输入，并从中提取关键信息以生成一个JSON字符串。JSON字符串应包含三个字段：`name`，`description`，和`function`。
 
+对于`name`字段，请提供一个简洁的标题，准确地反映用户输入的核心内容。
+对于`description`字段，请撰写一个详细的描述，总结用户输入的主要特点和相关信息。
+对于`function`字段，请描述该JSON字符串的目的是什么，以及它如何与用户输入相关联。
+
+用户输入:
+{input}
+
+请根据上述指导，生成一个JSON字符串，确保每个字段的内容都是对用户输入的准确总结和提炼。
+
+                              
+                              
+                              """)
+            
+        # 使用ollama生成个性化的提示词
+        print(prompt)
+        prompt=prompt.format(input=msg)
+        print(prompt)
+        response = ollama.chat(model='qwen',messages=[
+            {
+            'role': 'system',
+            'content': '你是一名提炼工程师.'
+            },
+        {
+            'role': 'user',
+            'content': prompt,
+        },],
+        stream=True,)
+        complete_message = ""
+        for chunk in response:
+            complete_message += chunk['message']['content']
+            socketio.emit('bot response', complete_message)
+            # 检查是否是完整的消息
+        if chunk['message']['content'].endswith(''):
+            print(complete_message)
+            complete_message = ""  # 重置消息内容
+        
     
     
     @app.route('/')
